@@ -36,7 +36,13 @@ namespace AXService.Services.Implementations
                 if (request.fileId == null)
                     request.fileId = Guid.NewGuid().ToString();
                 Log.Warning($"Xử lý request :  {headerInfo.RequestId}_{request.fileId}");
-                var filePath = await SaveFileOfRequest(request, headerInfo);
+                var filePath = request.filePath;
+                var isCreateStempFile = false;
+                if (string.IsNullOrEmpty(filePath))
+                {
+                    filePath = await SaveFileOfRequest(request, headerInfo);
+                    isCreateStempFile = true;
+                }
                 var funcToCall = GetFuncToCall(endpoint, "", args);
 
                 if (request.field != null)
@@ -48,7 +54,7 @@ namespace AXService.Services.Implementations
                 var result = await GetOcrResult(filePath, headerInfo, funcToCall);
 
                 //Hiện tại xóa file vì chạy thử
-                if (File.Exists(filePath))
+                if (isCreateStempFile && File.Exists(filePath))
                 {
                     if (!isSaveFile)
                     {

@@ -13,6 +13,10 @@ namespace AXService.Dtos
         public string fileId { get; set; } //
 
         /// <summary>
+        /// Đường dẫn file dạng smb hoặc local storage
+        /// </summary>
+        public string filePath { get; set; }
+        /// <summary>
         /// Nếu fileBase64=empty => tự dộng tử file từ amzone: var filePath = await amzS3client.DownloadFileFromS3Url(fileNameWithOutExt, request.fileUrl);
         /// </summary>
         public string fileUrl { get; set; }
