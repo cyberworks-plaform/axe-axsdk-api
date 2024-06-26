@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGServiceAX", "BGServiceAX\BGServiceAX.csproj", "{09A256A8-864F-49E5-9C11-9BC199060F7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AXAPIWrapper", "BGServiceAX\AXAPIWrapper.csproj", "{09A256A8-864F-49E5-9C11-9BC199060F7B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AXService", "AXService\AXService.csproj", "{57FF1C94-5772-451A-81C9-F017A2A728E5}"
 EndProject
