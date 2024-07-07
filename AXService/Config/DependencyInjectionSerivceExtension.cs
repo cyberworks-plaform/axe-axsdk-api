@@ -14,6 +14,7 @@ namespace AXService.Config
             services.AddSingleton<IBlobService, BlobService>();
 
             services.AddScoped<IInternalOcrSerivce, InternalOcrSerivce>();
+            services.AddScoped<ITableSegmentationService, TableSegmentationService>();
             services.AddScoped<IExternalOcrService, ExternalOcrService>();
             services.AddScoped<ICyberWorkService, CyberWorkService>();
             services.AddScoped<IProcessRequestService, ProcessRequestService>();

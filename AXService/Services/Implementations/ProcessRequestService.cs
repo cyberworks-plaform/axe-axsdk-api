@@ -1,10 +1,13 @@
-﻿using AXService.Dtos;
+﻿using AX.AXSDK;
+using AXService.Dtos;
 using AXService.Enums;
 using AXService.Helper;
 using AXService.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
+using OneAPI;
 using Serilog;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -15,17 +18,22 @@ namespace AXService.Services.Implementations
     {
         #region Init
         private readonly IInternalOcrSerivce _ocrService;
+        private readonly ITableSegmentationService _tableSegmentService;
         private readonly IAmzFileClientFactory _amzFileClientFactory;
         private readonly string TempSavePath;
         private readonly bool isSaveFile;
 
 
-        public ProcessRequestService(IConfiguration configuration, IInternalOcrSerivce internalOcrSerivce, IAmzFileClientFactory amzFileClientFactory)
+        public ProcessRequestService(IConfiguration configuration, 
+            IInternalOcrSerivce internalOcrSerivce, 
+            ITableSegmentationService tableSegmentService,
+            IAmzFileClientFactory amzFileClientFactory)
         {
             TempSavePath = configuration["StorageTempFile"];
             isSaveFile = configuration["IsSaveFile"] == "true";
             Directory.CreateDirectory(TempSavePath);
             _ocrService = internalOcrSerivce;
+            _tableSegmentService = tableSegmentService;
             _amzFileClientFactory = amzFileClientFactory;
         }
         #endregion
@@ -160,6 +168,23 @@ namespace AXService.Services.Implementations
                     return async (string path) => await _ocrService.ExtractTuPhapA3KhaiTu(path);
                 case CommonEnum.FunctionToCall.ExtractTuPhapA3KetHon:
                     return async (string path) => await _ocrService.ExtractTuPhapA3KetHon(path);
+                case CommonEnum.FunctionToCall.ExtractTuPhapA3NhanConNuoi:
+                    return async (string path) => await _ocrService.ExtractTuPhapA3NhanConNuoi(path);
+                case CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiSinh95:
+                    return async (string path) => await _ocrService.ExtractTuPhapA3KhaiSinh95(path);
+                case CommonEnum.FunctionToCall.ExtractTuPhapA3KetHon89:
+                    return async (string path) => await _ocrService.ExtractTuPhapA3KetHon89(path);
+                case CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiTu95:
+                    return async (string path) => await _ocrService.ExtractTuPhapA3KhaiTu95(path);
+                case CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiTu98:
+                    return async (string path) => await _ocrService.ExtractTuPhapA3KhaiTu98(path);
+
+                case CommonEnum.FunctionToCall.SegmentTuPhapA3KetHon:
+                    return async (string path) => await _tableSegmentService.Segment_TuPhapA3KetHon(path,0);
+                case CommonEnum.FunctionToCall.SegmentTuPhapA3KhaiSinh:
+                    return async (string path) => await _tableSegmentService.Segment_TuPhapA3KhaiSinh(path, 0);
+                case CommonEnum.FunctionToCall.SegmentTuPhapA3KhaiTu:
+                    return async (string path) => await _tableSegmentService.Segment_TuPhapA3KhaiTu(path, 0);
                 case "img2text":
                     if (args == null || args.Length < 1)
                     {
