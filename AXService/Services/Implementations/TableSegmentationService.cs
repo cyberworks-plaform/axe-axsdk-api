@@ -11,6 +11,7 @@ namespace AXService.Services.Implementations
     {
         public Task<List<Dictionary<string, InformationField>>> Segment_TuPhapA3KetHon(string filePath,int year)
         {
+            throw new NotImplementedException();
             List<string> listFieldName = new List<string>
             {
                 "STT",
@@ -83,6 +84,7 @@ namespace AXService.Services.Implementations
 
         public Task<List<Dictionary<string, InformationField>>> Segment_TuPhapA3KhaiSinh(string filePath,int year)
         {
+            throw new NotImplementedException();
             List<string> listFieldName = new List<string>
             {
                 "STT",
@@ -171,6 +173,7 @@ namespace AXService.Services.Implementations
 
         public Task<List<Dictionary<string, InformationField>>> Segment_TuPhapA3KhaiTu(string filePath, int year)
         {
+            throw new NotImplementedException("");
             List<string> listFieldName = new List<string>
             {
                 "STT",

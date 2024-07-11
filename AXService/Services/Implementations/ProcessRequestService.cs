@@ -24,8 +24,8 @@ namespace AXService.Services.Implementations
         private readonly bool isSaveFile;
 
 
-        public ProcessRequestService(IConfiguration configuration, 
-            IInternalOcrSerivce internalOcrSerivce, 
+        public ProcessRequestService(IConfiguration configuration,
+            IInternalOcrSerivce internalOcrSerivce,
             ITableSegmentationService tableSegmentService,
             IAmzFileClientFactory amzFileClientFactory)
         {
@@ -95,7 +95,7 @@ namespace AXService.Services.Implementations
         private async Task<object> GetOcrResult(string filePath, HeaderRequestInfo headerInfo, Func<string, Task<object>> func)
         {
             var sw = new Stopwatch();
-            Log.Warning($"Ocr Start !!!");
+            Log.Warning($"Ocr Start - File: {filePath}!!!");
             sw.Start();
 
             var resultOcr = await func.Invoke(filePath);
@@ -180,7 +180,7 @@ namespace AXService.Services.Implementations
                     return async (string path) => await _ocrService.ExtractTuPhapA3KhaiTu98(path);
 
                 case CommonEnum.FunctionToCall.SegmentTuPhapA3KetHon:
-                    return async (string path) => await _tableSegmentService.Segment_TuPhapA3KetHon(path,0);
+                    return async (string path) => await _tableSegmentService.Segment_TuPhapA3KetHon(path, 0);
                 case CommonEnum.FunctionToCall.SegmentTuPhapA3KhaiSinh:
                     return async (string path) => await _tableSegmentService.Segment_TuPhapA3KhaiSinh(path, 0);
                 case CommonEnum.FunctionToCall.SegmentTuPhapA3KhaiTu:

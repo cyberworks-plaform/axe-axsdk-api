@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Serilog;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -526,20 +527,19 @@ namespace BGServiceAX.Controllers
             if (validInfo != null) return validInfo;
             try
             {
-                object result;
+                object result = "[]";
                 var year = request.year;
-                if(year ==1995)
+                if (year == 1995)
                 {
                     result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiTu95, headerInfo);
                 }
-                else if(year ==1998)
+                else if (year == 1998)
                 {
                     result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiTu98, headerInfo);
                 }
-                else
+                else if (year > 1999)
                 {
                     result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiTu, headerInfo);
-
                 }
                 return new ContentResult
                 {
@@ -576,13 +576,13 @@ namespace BGServiceAX.Controllers
             if (validInfo != null) return validInfo;
             try
             {
-                object result;
+                object result = "[]"; //empty list
                 var year = request.year;
                 if (year == 1989)
                 {
                     result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapA3KetHon89, headerInfo);
                 }
-                else
+                else if (year > 1999)
                 {
                     result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapA3KetHon, headerInfo);
                 }
@@ -641,13 +641,15 @@ namespace BGServiceAX.Controllers
             if (validInfo != null) return validInfo;
             try
             {
-                object result=string.Empty;
+                object result = "[]";
                 var year = request.year;
                 if (year == 1995)
                 {
                     result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiSinh95, headerInfo);
                 }
-                   
+
+
+
                 return new ContentResult
                 {
                     ContentType = "application/json",
@@ -933,7 +935,7 @@ namespace BGServiceAX.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("_get_license")]
-        
+
         public async Task<IActionResult> GetLicenseInfo()
         {
             try
