@@ -152,6 +152,15 @@ namespace AXService.Services.Implementations
                         throw new ArgumentException($"Parman charType must be: {string.Join(',', Enum.GetValues(typeof(CommonEnum.CharType)))}");
                     }
                     return async (string path) => await _ocrService.BocTach_HoTich(path, (CommonEnum.DocType)Enum.Parse(typeof(CommonEnum.DocType), args[0].ToUpper()), (CommonEnum.FormType_HT)Enum.Parse(typeof(CommonEnum.FormType_HT), args[1].ToUpper()), (CommonEnum.CharType)Enum.Parse(typeof(CommonEnum.CharType), args[2].ToUpper()));
+               
+                case CommonEnum.FunctionToCall.ExtractTuPhapKhaiSinh:
+                    return async (string path) => await _ocrService.ExtractTuPhapKhaiSinh(path);
+                case CommonEnum.FunctionToCall.ExtractTuPhapKhaiTu:
+                    return async (string path) => await _ocrService.ExtractTuPhapKhaiTu(path);
+                case CommonEnum.FunctionToCall.ExtractTuPhapKetHon:
+                    return async (string path) => await _ocrService.ExtractTuPhapKetHon(path);
+                case CommonEnum.FunctionToCall.ExtractTuPhapChaMeCon:
+                    return async (string path) => await _ocrService.ExtractTuPhapChaMeCon(path);
                 case CommonEnum.FunctionToCall.ExtractTuPhapCaiChinh:
                     return async (string path) => await _ocrService.ExtractTuPhapCaiChinh(path);
                 case CommonEnum.FunctionToCall.ExtractTuPhapGiamHo:
