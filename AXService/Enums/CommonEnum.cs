@@ -1,5 +1,6 @@
 ﻿using AX.AXSDK;
 using OneAPI;
+using System;
 using System.Collections.Generic;
 
 namespace AXService.Enums
@@ -32,10 +33,17 @@ namespace AXService.Enums
         /// </summary>
         public struct FunctionToCall
         {
+            //Tư pháp A4
+            public const string ExtractTuPhapKhaiSinh = "ExtractTuPhapKhaiSinh";
+            public const string ExtractTuPhapKhaiTu = "ExtractTuPhapKhaiTu";
+            public const string ExtractTuPhapKetHon = "ExtractTuPhapKetHon";
+            public const string ExtractTuPhapChaMeCon = "ExtractTuPhapChaMeCon";
             public const string ExtractTuPhapCaiChinh = "ExtractTuPhapCaiChinh";
             public const string ExtractTuPhapGiamHo = "ExtractTuPhapGiamHo";
             public const string ExtractTuPhapLyHon = "ExtractTuPhapLyHon";
             public const string ExtractTuPhapNhanConNuoi = "ExtractTuPhapNhanConNuoi";
+
+            //Tư pháp A3
             public const string ExtractTuPhapA3KhaiSinh_Mau3Recogs = "ExtractTuPhapA3KhaiSinh_Mau3Recogs";
             public const string ExtractTuPhapA3KhaiSinh_Mau4Recogs = "ExtractTuPhapA3KhaiSinh_Mau4Recogs";
             public const string ExtractTuPhapA3KhaiTu = "ExtractTuPhapA3KhaiTu";

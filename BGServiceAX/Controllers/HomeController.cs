@@ -316,6 +316,118 @@ namespace BGServiceAX.Controllers
         }
 
         [HttpPost]
+        [Route("ocr/tuphap-khaisinh")]
+        public async Task<IActionResult> ProcessTuPhapKhaiSinh([FromBody] BasicFileRequest request)
+        {
+            //Header process
+            var headerInfo = HeaderRequestHelper.GetHeaderInfo(Request);
+            AppendResponse(headerInfo);
+            var validInfo = ValidHeaderInfo(headerInfo);
+            if (validInfo != null) return validInfo;
+            try
+            {
+                var result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapKhaiSinh, headerInfo);
+
+                return new ContentResult
+                {
+                    ContentType = "application/json",
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Content = result is string ? (string)result : JsonConvert.SerializeObject(result),
+                };
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                Log.Error(ex.StackTrace);
+                return StatusCode(400, $"Đã có lỗi xảy ra, liên hệ quản trị viên");
+            }
+        }
+
+        [HttpPost]
+        [Route("ocr/tuphap-khaitu")]
+        public async Task<IActionResult> ProcessTuPhapKhaiTu([FromBody] BasicFileRequest request)
+        {
+            //Header process
+            var headerInfo = HeaderRequestHelper.GetHeaderInfo(Request);
+            AppendResponse(headerInfo);
+            var validInfo = ValidHeaderInfo(headerInfo);
+            if (validInfo != null) return validInfo;
+            try
+            {
+                var result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapKhaiTu, headerInfo);
+
+                return new ContentResult
+                {
+                    ContentType = "application/json",
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Content = result is string ? (string)result : JsonConvert.SerializeObject(result),
+                };
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                Log.Error(ex.StackTrace);
+                return StatusCode(400, $"Đã có lỗi xảy ra, liên hệ quản trị viên");
+            }
+        }
+
+        [HttpPost]
+        [Route("ocr/tuphap-kethon")]
+        public async Task<IActionResult> ProcessTuPhapKetHon([FromBody] BasicFileRequest request)
+        {
+            //Header process
+            var headerInfo = HeaderRequestHelper.GetHeaderInfo(Request);
+            AppendResponse(headerInfo);
+            var validInfo = ValidHeaderInfo(headerInfo);
+            if (validInfo != null) return validInfo;
+            try
+            {
+                var result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapKetHon, headerInfo);
+
+                return new ContentResult
+                {
+                    ContentType = "application/json",
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Content = result is string ? (string)result : JsonConvert.SerializeObject(result),
+                };
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                Log.Error(ex.StackTrace);
+                return StatusCode(400, $"Đã có lỗi xảy ra, liên hệ quản trị viên");
+            }
+        }
+
+        [HttpPost]
+        [Route("ocr/tuphap-chamecon")]
+        public async Task<IActionResult> ProcessTuPhapChaMeCon([FromBody] BasicFileRequest request)
+        {
+            //Header process
+            var headerInfo = HeaderRequestHelper.GetHeaderInfo(Request);
+            AppendResponse(headerInfo);
+            var validInfo = ValidHeaderInfo(headerInfo);
+            if (validInfo != null) return validInfo;
+            try
+            {
+                var result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapChaMeCon, headerInfo);
+
+                return new ContentResult
+                {
+                    ContentType = "application/json",
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Content = result is string ? (string)result : JsonConvert.SerializeObject(result),
+                };
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                Log.Error(ex.StackTrace);
+                return StatusCode(400, $"Đã có lỗi xảy ra, liên hệ quản trị viên");
+            }
+        }
+
+        [HttpPost]
         [Route("ocr/tuphap-caichinh")]
         public async Task<IActionResult> ProceesTuPhapCaiChinh([FromBody] BasicFileRequest request)
         {
@@ -647,6 +759,14 @@ namespace BGServiceAX.Controllers
                 {
                     result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiSinh95, headerInfo);
                 }
+                else if(year ==1999)
+                {
+                    result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiSinh_Mau3Recogs, headerInfo);
+                }    
+                else if( year >1999)
+                {
+                    result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiSinh_Mau4Recogs, headerInfo);
+                }    
 
 
 

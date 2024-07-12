@@ -436,7 +436,85 @@ namespace AXService.Services.Implementations
             }
         }
 
+        /// <summary>
+        /// Boc tách phiếu khai sinh A4
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public async Task<object> ExtractTuPhapKhaiSinh(string filePath)
+        {
+            try
+            {
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapKhaiSinh(filePath));
+                return JsonConvert.SerializeObject(rs);
+            }
+            catch (Exception ex)
+            {
 
+                throw ex;
+                //return ex.Message;
+            }
+        }
+
+        /// <summary>
+        /// Bóc tách phiếu tư pháp khai tử A4
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public async Task<object> ExtractTuPhapKhaiTu(string filePath)
+        {
+            try
+            {
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapKhaiTu(filePath));
+                return JsonConvert.SerializeObject(rs);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+                //return ex.Message;
+            }
+        }
+
+        /// <summary>
+        /// Bóc tách phiếu kết hôn A4
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public async Task<object> ExtractTuPhapKetHon(string filePath)
+        {
+            try
+            {
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapKetHon(filePath));
+                return JsonConvert.SerializeObject(rs);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+                //return ex.Message;
+            }
+        }
+
+        /// <summary>
+        /// Bóc tách phiếu tư pháp Cha Mẹ Con A4
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public async Task<object> ExtractTuPhapChaMeCon(string filePath)
+        {
+            try
+            {
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapChaMeCon(filePath));
+                return JsonConvert.SerializeObject(rs);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+                //return ex.Message;
+            }
+        }
         /// <summary>
         /// Bóc tách phiếu Tư pháp - Cải chính
         /// </summary>
