@@ -31,5 +31,10 @@ namespace AXService.Dtos
         /// </summary>
         public string fileBase64 { get; set; }
         public object field { get; set; } //=> ocr for table
+
+        /// <summary>
+        /// Năm của mẫu phiếu cần xử lý
+        /// </summary>
+        public int year { get;set; } 
     }
 }

@@ -619,5 +619,86 @@ namespace AXService.Services.Implementations
                 //return ex.Message;
             }
         }
+
+        public async Task<object> ExtractTuPhapA3NhanConNuoi(string filePath)
+        {
+            try
+            {
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3NhanConNuoi(filePath));
+                //return jsonInfo;
+                return JsonConvert.SerializeObject(rs);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+                //return ex.Message;
+            }
+        }
+
+        public async Task<object> ExtractTuPhapA3KhaiSinh95(string filePath)
+        {
+            try
+            {
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiSinh95(filePath));
+                //return jsonInfo;
+                return JsonConvert.SerializeObject(rs);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+                //return ex.Message;
+            }
+        }
+
+        public async Task<object> ExtractTuPhapA3KetHon89(string filePath)
+        {
+            try
+            {
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KetHon89(filePath));
+                //return jsonInfo;
+                return JsonConvert.SerializeObject(rs);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+                //return ex.Message;
+            }
+        }
+
+        public async Task<object> ExtractTuPhapA3KhaiTu95(string filePath)
+        {
+            try
+            {
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiTu95(filePath));
+                //return jsonInfo;
+                return JsonConvert.SerializeObject(rs);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+                //return ex.Message;
+            }
+        }
+        public async Task<object> ExtractTuPhapA3KhaiTu98(string filePath)
+        {
+            try
+            {
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiTu98(filePath));
+                //return jsonInfo;
+                return JsonConvert.SerializeObject(rs);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+                //return ex.Message;
+            }
+        }
+
+    
     }
 }
