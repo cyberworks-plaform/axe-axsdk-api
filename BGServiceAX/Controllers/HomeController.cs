@@ -690,7 +690,7 @@ namespace BGServiceAX.Controllers
             {
                 object result = "[]"; //empty list
                 var year = request.year;
-                if (year == 1989)
+                if (year >= 1989 && year <=1994)
                 {
                     result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapA3KetHon89, headerInfo);
                 }
