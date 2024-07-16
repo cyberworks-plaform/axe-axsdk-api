@@ -795,6 +795,41 @@ namespace BGServiceAX.Controllers
 
         #endregion
 
+        /// <summary>
+        /// Hàm này không gọi AX-SDK nào, chỉ trả về rỗng []
+        /// Mục đích: các mẫu phiếu chưa được xử lý bởi AX-SDK nhằm đảm bảo quy trình có thẻ hoạt động như bình thường
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns>
+        /// Kết quả trả lại kiểu List<Dictionary<string, InformationField>>
+        /// </returns>
+        [HttpPost]
+        [Route("ocr/no-ocr")]
+        public async Task<IActionResult> NoOCR([FromBody] BasicFileRequest request)
+        {
+            //Header process
+            var headerInfo = HeaderRequestHelper.GetHeaderInfo(Request);
+            AppendResponse(headerInfo);
+            var validInfo = ValidHeaderInfo(headerInfo);
+            if (validInfo != null) return validInfo;
+            try
+            {
+                object result = "[]";
+                return new ContentResult
+                {
+                    ContentType = "application/json",
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Content = result is string ? (string)result : JsonConvert.SerializeObject(result),
+                };
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                Log.Error(ex.StackTrace);
+                return StatusCode(400, $"Đã có lỗi xảy ra, liên hệ quản trị viên");
+            }
+        }
+
 
         [HttpPost]
         [Route("ocr/tunguyen-insurance")]
