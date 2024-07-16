@@ -645,6 +645,10 @@ namespace BGServiceAX.Controllers
                 {
                     result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiTu95, headerInfo);
                 }
+                if (year >= 1996 && year <=1997)
+                {
+                    //Todo: Đợi bản build AX SDK
+                }
                 else if (year == 1998)
                 {
                     result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiTu98, headerInfo);
@@ -690,7 +694,7 @@ namespace BGServiceAX.Controllers
             {
                 object result = "[]"; //empty list
                 var year = request.year;
-                if (year >= 1989 && year <=1994)
+                if (year <= 1999)
                 {
                     result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapA3KetHon89, headerInfo);
                 }
@@ -755,18 +759,22 @@ namespace BGServiceAX.Controllers
             {
                 object result = "[]";
                 var year = request.year;
-                if (year == 1995)
+                if (year >= 1991 && year <= 1996)
                 {
                     result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiSinh95, headerInfo);
                 }
-                else if(year ==1999)
+                else if (year == 1997)
+                {
+                    //Todo: Đợi bản build AX-SDK mới
+                }
+                else if (year == 1999)
                 {
                     result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiSinh_Mau3Recogs, headerInfo);
-                }    
-                else if( year >1999)
+                }
+                else if (year > 1999)
                 {
                     result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiSinh_Mau4Recogs, headerInfo);
-                }    
+                }
 
 
 
@@ -784,118 +792,6 @@ namespace BGServiceAX.Controllers
                 return StatusCode(400, $"Đã có lỗi xảy ra, liên hệ quản trị viên");
             }
         }
-
-        /// <summary>
-        /// Segment mẫu phiếu Tư pháp Kết hôn A3 trước năm 1999
-        /// 
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns>
-        /// Kết quả trả lại kiểu List<Dictionary<string, InformationField>>
-        /// </returns>
-        [HttpPost]
-        [Route("segment/tuphap-a3-kethon")]
-        public async Task<IActionResult> SegmentTuPhapA3KetHon([FromBody] BasicFileRequest request)
-        {
-            //Header process
-            var headerInfo = HeaderRequestHelper.GetHeaderInfo(Request);
-            AppendResponse(headerInfo);
-            var validInfo = ValidHeaderInfo(headerInfo);
-            if (validInfo != null) return validInfo;
-            try
-            {
-                var result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.SegmentTuPhapA3KetHon, headerInfo);
-
-                return new ContentResult
-                {
-                    ContentType = "application/json",
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Content = result is string ? (string)result : JsonConvert.SerializeObject(result),
-                };
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex.Message);
-                Log.Error(ex.StackTrace);
-                return StatusCode(400, $"Đã có lỗi xảy ra, liên hệ quản trị viên");
-            }
-        }
-
-
-        /// <summary>
-        /// Segment mẫu phiếu Tư pháp Kết hôn A3 trước năm 1999
-        /// 
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns>
-        /// Kết quả trả lại kiểu List<Dictionary<string, InformationField>>
-        /// </returns>
-        [HttpPost]
-        [Route("segment/tuphap-a3-khaisinh")]
-        public async Task<IActionResult> SegmentTuPhapA3KhaiSinh([FromBody] BasicFileRequest request)
-        {
-            //Header process
-            var headerInfo = HeaderRequestHelper.GetHeaderInfo(Request);
-            AppendResponse(headerInfo);
-            var validInfo = ValidHeaderInfo(headerInfo);
-            if (validInfo != null) return validInfo;
-            try
-            {
-                var result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.SegmentTuPhapA3KhaiSinh, headerInfo);
-
-                return new ContentResult
-                {
-                    ContentType = "application/json",
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Content = result is string ? (string)result : JsonConvert.SerializeObject(result),
-                };
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex.Message);
-                Log.Error(ex.StackTrace);
-                return StatusCode(400, $"Đã có lỗi xảy ra, liên hệ quản trị viên");
-            }
-        }
-
-
-        /// <summary>
-        /// Segment mẫu phiếu Tư pháp Kết hôn A3 trước năm 1999
-        /// 
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns>
-        /// Kết quả trả lại kiểu List<Dictionary<string, InformationField>>
-        /// </returns>
-        [HttpPost]
-        [Route("segment/tuphap-a3-khaitu")]
-        public async Task<IActionResult> SegmentTuPhapA3KhaiTu([FromBody] BasicFileRequest request)
-        {
-            //Header process
-            var headerInfo = HeaderRequestHelper.GetHeaderInfo(Request);
-            AppendResponse(headerInfo);
-            var validInfo = ValidHeaderInfo(headerInfo);
-            if (validInfo != null) return validInfo;
-            try
-            {
-                var result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.SegmentTuPhapA3KhaiTu, headerInfo);
-
-                return new ContentResult
-                {
-                    ContentType = "application/json",
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Content = result is string ? (string)result : JsonConvert.SerializeObject(result),
-                };
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex.Message);
-                Log.Error(ex.StackTrace);
-                return StatusCode(400, $"Đã có lỗi xảy ra, liên hệ quản trị viên");
-            }
-        }
-
-
 
         #endregion
 
