@@ -18,11 +18,13 @@ namespace AXService.Services.Implementations
     {
         private readonly IConfiguration _configuration;
         private readonly string _axSvAddress;
+        private readonly bool _runOCR_On_A3_Old; //có xử lý OCR->Text cho các mẫu phiếu A3 cũ
 
         public InternalOcrSerivce(IConfiguration configuration)
         {
             _configuration = configuration;
             _axSvAddress = _configuration["AxConfigs:Address"] ?? "localhost";
+            _runOCR_On_A3_Old = _configuration.GetValue<bool>("RunOCR_On_A3_Old", false);
             APIs.SetServerAddress(_axSvAddress);
         }
 
@@ -718,7 +720,7 @@ namespace AXService.Services.Implementations
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiSinh95(filePath));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiSinh95(filePath,_runOCR_On_A3_Old));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
@@ -734,7 +736,7 @@ namespace AXService.Services.Implementations
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiSinh97(filePath));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiSinh97(filePath,_runOCR_On_A3_Old));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
@@ -750,7 +752,7 @@ namespace AXService.Services.Implementations
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KetHon89(filePath));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KetHon89(filePath, _runOCR_On_A3_Old));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
@@ -765,7 +767,7 @@ namespace AXService.Services.Implementations
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KetHon98(filePath));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KetHon98(filePath, _runOCR_On_A3_Old));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
@@ -781,7 +783,7 @@ namespace AXService.Services.Implementations
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiTu95(filePath));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiTu95(filePath, _runOCR_On_A3_Old));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
@@ -796,7 +798,7 @@ namespace AXService.Services.Implementations
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiTu96(filePath));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiTu96(filePath, _runOCR_On_A3_Old));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
@@ -811,7 +813,7 @@ namespace AXService.Services.Implementations
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiTu98(filePath));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiTu98(filePath, _runOCR_On_A3_Old));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
