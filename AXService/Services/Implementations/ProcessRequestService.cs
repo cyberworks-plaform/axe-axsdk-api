@@ -181,10 +181,16 @@ namespace AXService.Services.Implementations
                     return async (string path) => await _ocrService.ExtractTuPhapA3NhanConNuoi(path);
                 case CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiSinh95:
                     return async (string path) => await _ocrService.ExtractTuPhapA3KhaiSinh95(path);
+                case CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiSinh97:
+                    return async (string path) => await _ocrService.ExtractTuPhapA3KhaiSinh97(path);
                 case CommonEnum.FunctionToCall.ExtractTuPhapA3KetHon89:
                     return async (string path) => await _ocrService.ExtractTuPhapA3KetHon89(path);
+                case CommonEnum.FunctionToCall.ExtractTuPhapA3KetHon98:
+                    return async (string path) => await _ocrService.ExtractTuPhapA3KetHon98(path);
                 case CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiTu95:
                     return async (string path) => await _ocrService.ExtractTuPhapA3KhaiTu95(path);
+                case CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiTu96:
+                    return async (string path) => await _ocrService.ExtractTuPhapA3KhaiTu96(path);
                 case CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiTu98:
                     return async (string path) => await _ocrService.ExtractTuPhapA3KhaiTu98(path);
 

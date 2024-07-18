@@ -730,11 +730,42 @@ namespace AXService.Services.Implementations
             }
         }
 
+        public async Task<object> ExtractTuPhapA3KhaiSinh97(string filePath)
+        {
+            try
+            {
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiSinh97(filePath));
+                //return jsonInfo;
+                return JsonConvert.SerializeObject(rs);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+                //return ex.Message;
+            }
+        }
+
         public async Task<object> ExtractTuPhapA3KetHon89(string filePath)
         {
             try
             {
                 var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KetHon89(filePath));
+                //return jsonInfo;
+                return JsonConvert.SerializeObject(rs);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+                //return ex.Message;
+            }
+        }
+        public async Task<object> ExtractTuPhapA3KetHon98(string filePath)
+        {
+            try
+            {
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KetHon98(filePath));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
@@ -751,6 +782,21 @@ namespace AXService.Services.Implementations
             try
             {
                 var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiTu95(filePath));
+                //return jsonInfo;
+                return JsonConvert.SerializeObject(rs);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+                //return ex.Message;
+            }
+        }
+        public async Task<object> ExtractTuPhapA3KhaiTu96(string filePath)
+        {
+            try
+            {
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiTu96(filePath));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
