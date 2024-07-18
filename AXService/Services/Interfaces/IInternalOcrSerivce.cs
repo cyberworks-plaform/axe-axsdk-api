@@ -42,5 +42,8 @@ namespace AXService.Services.Interfaces
         Task<object> ExtractTuPhapKhaiTu(string filePath);
         Task<object> ExtractTuPhapKetHon(string filePath);
         Task<object> ExtractTuPhapChaMeCon(string filePath);
+        Task<object> ExtractTuPhapA3KhaiSinh97(string filePath);
+        Task<object> ExtractTuPhapA3KetHon98(string filePath);
+        Task<object> ExtractTuPhapA3KhaiTu96(string filePath);
     }
 }

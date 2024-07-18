@@ -51,8 +51,11 @@ namespace AXService.Enums
 
             public const string ExtractTuPhapA3NhanConNuoi = "ExtractTuPhapA3NhanConNuoi";
             public const string ExtractTuPhapA3KhaiSinh95 = "ExtractTuPhapA3KhaiSinh95";
+            public const string ExtractTuPhapA3KhaiSinh97 = "ExtractTuPhapA3KhaiSinh97";
             public const string ExtractTuPhapA3KetHon89 = "ExtractTuPhapA3KetHon89";
+            public const string ExtractTuPhapA3KetHon98 = "ExtractTuPhapA3KetHon98";
             public const string ExtractTuPhapA3KhaiTu95 = "ExtractTuPhapA3KhaiTu95";
+            public const string ExtractTuPhapA3KhaiTu96 = "ExtractTuPhapA3KhaiTu96";
             public const string ExtractTuPhapA3KhaiTu98 = "ExtractTuPhapA3KhaiTu98";
 
             public const string SegmentTuPhapA3KetHon = "SegmentTuPhapA3KetHon";

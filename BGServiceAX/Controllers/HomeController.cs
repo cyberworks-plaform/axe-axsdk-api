@@ -647,7 +647,7 @@ namespace BGServiceAX.Controllers
                 }
                 if (year >= 1996 && year <=1997)
                 {
-                    //Todo: Đợi bản build AX SDK
+                    result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiTu96, headerInfo);
                 }
                 else if (year == 1998)
                 {
@@ -694,9 +694,13 @@ namespace BGServiceAX.Controllers
             {
                 object result = "[]"; //empty list
                 var year = request.year;
-                if (year <= 1999)
+                if (year >= 1989 && year <= 1994)
                 {
                     result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapA3KetHon89, headerInfo);
+                }
+                else if (year >= 1997 && year <= 1998)
+                {
+                    result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapA3KetHon98, headerInfo);
                 }
                 else if (year > 1999)
                 {
@@ -765,7 +769,7 @@ namespace BGServiceAX.Controllers
                 }
                 else if (year == 1997)
                 {
-                    //Todo: Đợi bản build AX-SDK mới
+                    result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiSinh97, headerInfo);
                 }
                 else if (year == 1999)
                 {
