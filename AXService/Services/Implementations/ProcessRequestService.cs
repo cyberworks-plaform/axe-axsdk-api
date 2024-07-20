@@ -134,25 +134,6 @@ namespace AXService.Services.Implementations
                     return async (string path) => await _ocrService.BocTach_VBHC(path);
                 case "tunguyen":
                     return async (string path) => await _ocrService.BocTach_TuNguyen(path);
-                case "hotich":
-                    if (args == null || args.Length < 3)
-                    {
-                        throw new ArgumentException("Missing Param");
-                    }
-                    if (!Enum.IsDefined(typeof(CommonEnum.DocType), args[0].ToUpper()))
-                    {
-                        throw new ArgumentException($"Parman docType must be: {string.Join(',', Enum.GetValues(typeof(CommonEnum.DocType)))}");
-                    }
-                    if (!Enum.IsDefined(typeof(CommonEnum.FormType_HT), args[1].ToUpper()))
-                    {
-                        throw new ArgumentException($"Parman formType must be: {string.Join(',', Enum.GetValues(typeof(CommonEnum.FormType_HT)))}");
-                    }
-                    if (!Enum.IsDefined(typeof(CommonEnum.CharType), args[2].ToUpper()))
-                    {
-                        throw new ArgumentException($"Parman charType must be: {string.Join(',', Enum.GetValues(typeof(CommonEnum.CharType)))}");
-                    }
-                    return async (string path) => await _ocrService.BocTach_HoTich(path, (CommonEnum.DocType)Enum.Parse(typeof(CommonEnum.DocType), args[0].ToUpper()), (CommonEnum.FormType_HT)Enum.Parse(typeof(CommonEnum.FormType_HT), args[1].ToUpper()), (CommonEnum.CharType)Enum.Parse(typeof(CommonEnum.CharType), args[2].ToUpper()));
-               
                 case CommonEnum.FunctionToCall.ExtractTuPhapKhaiSinh:
                     return async (string path) => await _ocrService.ExtractTuPhapKhaiSinh(path);
                 case CommonEnum.FunctionToCall.ExtractTuPhapKhaiTu:
@@ -169,6 +150,8 @@ namespace AXService.Services.Implementations
                     return async (string path) => await _ocrService.ExtractTuPhapLyHon(path);
                 case CommonEnum.FunctionToCall.ExtractTuPhapNhanConNuoi:
                     return async (string path) => await _ocrService.ExtractTuPhapNhanConNuoi(path);
+                case CommonEnum.FunctionToCall.ExtractTuPhapHonNhan:
+                    return async (string path) => await _ocrService.ExtractTuPhapHonNhan(path);
                 case CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiSinh_Mau3Recogs:
                     return async (string path) => await _ocrService.ExtractTuPhapA3KhaiSinh_Mau3Recogs(path);
                 case CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiSinh_Mau4Recogs:

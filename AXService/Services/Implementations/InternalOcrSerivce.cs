@@ -392,51 +392,6 @@ namespace AXService.Services.Implementations
             }
         }
 
-        public async Task<object> BocTach_HoTich(string filePath, DocType docType, FormType_HT formType, CharType charType)
-        {
-            try
-            {
-                if (docType == DocType.A3)
-                {
-                    return await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3_KS_DEV(filePath, out List<List<Dictionary<string, string>>> sub));
-                }
-                else //A4
-                {
-                    switch ((formType, charType))
-                    {
-                        case (FormType_HT.KS, CharType.HANDWRI): //Khai sinh, viết tay
-                            APIs.FormAPI.ExtractTuPhapKS(filePath, out string jsonInfoTuPhapKS);
-                            return await Task.FromResult(jsonInfoTuPhapKS);
-                        case (FormType_HT.KS, CharType.TEXT): //Khai sinh chữ in
-                            APIs.FormAPI.ExtractTuPhapKSChuIn(filePath, out string jsonInfoTuPhapKSChuIn);
-                            return await Task.FromResult(jsonInfoTuPhapKSChuIn);
-                        case (FormType_HT.KH, CharType.HANDWRI): // kết hôn viết tay
-                            APIs.FormAPI.ExtractTuPhapKH(filePath, out string jsonInfoTuPhapKH);
-                            return await Task.FromResult(jsonInfoTuPhapKH);
-                        case (FormType_HT.CMC, CharType.HANDWRI): // Nhận cha mẹ con viết tay
-                            APIs.FormAPI.ExtractTuPhapCMC(filePath, out string tuPhapCMCJson);
-                            return await Task.FromResult(tuPhapCMCJson);
-                        case (FormType_HT.KT, CharType.HANDWRI): //Khai tử viết tay
-                            APIs.FormAPI.ExtractTuPhapKT(filePath, out string jsonInfoTuPhapKT);
-                            return await Task.FromResult(jsonInfoTuPhapKT);
-                        case (FormType_HT.KT, CharType.TEXT): //Khai tử chữ in
-                            APIs.FormAPI.ExtractTuPhapKTChuIn(filePath, out string jsonInfoTuPhapKTChuIn);
-                            return await Task.FromResult(jsonInfoTuPhapKTChuIn);
-                        case (FormType_HT.HN, CharType.HANDWRI): //Hôn nhân viết tay
-                            APIs.FormAPI.ExtractTuPhapHN(filePath, out string jsonInfoTuPhapHN);
-                            return await Task.FromResult(jsonInfoTuPhapHN);
-                        default:
-                            throw new Exception("Does not support");
-                    }
-                }
-
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-                //return ex.Message;
-            }
-        }
 
         /// <summary>
         /// Boc tách phiếu khai sinh A4
@@ -607,6 +562,25 @@ namespace AXService.Services.Implementations
             }
         }
 
+        /// <summary>
+        /// Boc tách phiếu tư pháp hôn nhân A4
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public async Task<object> ExtractTuPhapHonNhan(string filePath)
+        {
+            try
+            {
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapHonNhan(filePath));
+                return JsonConvert.SerializeObject(rs);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+                //return ex.Message;
+            }
+        }
 
         /// <summary>
         /// Bóc tách phiếu  A3 Khai sinh 3 recogs

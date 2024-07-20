@@ -16,7 +16,6 @@ namespace AXService.Services.Interfaces
         Task<string> NhanDienVung(string filePath);
         Task<string> NhanDangTextChoBang(string filePath, string tableJson);
         Task<object> BocTach_VBHC(string filePath);
-        Task<object> BocTach_HoTich(string filePath, DocType docType, FormType_HT formType, CharType charType);
         Task<object> BocTach_TuNguyen(string filePath);
         Task<object> BocTach_Cmnd(string filePath);
         Task<object> BocTach_Passport(string filePath);
@@ -45,5 +44,6 @@ namespace AXService.Services.Interfaces
         Task<object> ExtractTuPhapA3KhaiSinh97(string filePath);
         Task<object> ExtractTuPhapA3KetHon98(string filePath);
         Task<object> ExtractTuPhapA3KhaiTu96(string filePath);
+        Task<object> ExtractTuPhapHonNhan(string filePath);
     }
 }

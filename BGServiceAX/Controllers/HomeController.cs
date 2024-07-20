@@ -286,35 +286,7 @@ namespace BGServiceAX.Controllers
         }
 
         #region OCR bộ phiếu tư pháp
-        [HttpPost]
-        [Route("ocr/hotich")]
-        [FilterSupportTagOnly("CyberWork")]
-        public async Task<IActionResult> ProceesHoTich([FromBody] BasicFileRequest request, string docType = "A4", string formType = "KS", string charType = "TEXT")
-        {
-            //Header process
-            var headerInfo = HeaderRequestHelper.GetHeaderInfo(Request);
-            AppendResponse(headerInfo);
-            var validInfo = ValidHeaderInfo(headerInfo);
-            if (validInfo != null) return validInfo;
-            try
-            {
-                var result = await _processRequestService.ProcessRequest(request, "hotich", headerInfo, docType, formType, charType);
-
-                return new ContentResult
-                {
-                    ContentType = "application/json",
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Content = result is string ? (string)result : JsonConvert.SerializeObject(result)
-                };
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex.Message);
-                Log.Error(ex.StackTrace);
-                return StatusCode(400, $"Đã có lỗi xảy ra, liên hệ quản trị viên");
-            }
-        }
-
+      
         [HttpPost]
         [Route("ocr/tuphap-khaisinh")]
         public async Task<IActionResult> ProcessTuPhapKhaiSinh([FromBody] BasicFileRequest request)
@@ -531,6 +503,42 @@ namespace BGServiceAX.Controllers
             try
             {
                 var result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapNhanConNuoi, headerInfo);
+
+                return new ContentResult
+                {
+                    ContentType = "application/json",
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Content = result is string ? (string)result : JsonConvert.SerializeObject(result),
+                };
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                Log.Error(ex.StackTrace);
+                return StatusCode(400, $"Đã có lỗi xảy ra, liên hệ quản trị viên");
+            }
+        }
+
+        /// <summary>
+        /// OCR mẫu phiếu Tư pháp - Tình trạng hôn nhân
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns>
+        /// Kết quả trả lại kiểu Dictionary<string, InformationField>
+        /// </returns>
+        [HttpPost]
+        [Route("ocr/tuphap-honnhan")]
+        public async Task<IActionResult> ProceesTuPhapHonNhan([FromBody] BasicFileRequest request)
+        {
+            //Header process
+            var headerInfo = HeaderRequestHelper.GetHeaderInfo(Request);
+            AppendResponse(headerInfo);
+            var validInfo = ValidHeaderInfo(headerInfo);
+            if (validInfo != null) return validInfo;
+            try
+            {
+                var result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCall.ExtractTuPhapHonNhan, headerInfo);
 
                 return new ContentResult
                 {
