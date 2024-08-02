@@ -3,6 +3,7 @@ using AXService.Dtos;
 using AXService.Enums;
 using AXService.Helper;
 using AXService.Services.Interfaces;
+using Azure.Core;
 using Microsoft.Extensions.Configuration;
 using OneAPI;
 using Serilog;
@@ -39,11 +40,17 @@ namespace AXService.Services.Implementations
         #endregion
         public async Task<object> ProcessRequest(BasicFileRequest request, string endpoint, HeaderRequestInfo headerInfo, params string[] args)
         {
+            string requestId = string.Empty;
             try
             {
                 if (request.fileId == null)
                     request.fileId = Guid.NewGuid().ToString();
-                Log.Warning($"Xử lý request :  {headerInfo.RequestId}_{request.fileId}");
+
+                requestId = $"{headerInfo.RequestId}";
+
+                var sw = new Stopwatch();
+                sw.Start();
+                Log.Warning($"Start handle request : {requestId} - Request.FileId= {request.fileId} ");
                 var filePath = request.filePath;
                 var isCreateStempFile = false;
                 if (string.IsNullOrEmpty(filePath))
@@ -69,13 +76,15 @@ namespace AXService.Services.Implementations
                         File.Delete(filePath);
                     }
                 }
+                sw.Stop();
+                Log.Warning($"End handle request : {requestId} - Duration: {sw.ElapsedMilliseconds} ms ");
                 return result;
 
 
             }
             catch (Exception ex)
             {
-
+                Log.Error($"Lỗi khi xử lý request: {requestId} => Message: {ex.Message} => Stack strace: {ex.StackTrace} ");
                 throw ex;
             }
         }
@@ -94,12 +103,13 @@ namespace AXService.Services.Implementations
         #region Private
         private async Task<object> GetOcrResult(string filePath, HeaderRequestInfo headerInfo, Func<string, Task<object>> func)
         {
+            var requestId = $"{headerInfo.RequestId}";
             var sw = new Stopwatch();
-            Log.Warning($"Ocr Start - File: {filePath}!!!");
+            Log.Warning($"Ocr Start - Request: {requestId} - File: {filePath}!!!");
             sw.Start();
 
             var resultOcr = await func.Invoke(filePath);
-            Log.Warning($"Duration: {sw.ElapsedMilliseconds} ms : Đã lấy xong kết quả Orc  : {resultOcr}");
+            Log.Warning($"Ocr End - Request: {requestId} - File {filePath} -  Duration: {sw.ElapsedMilliseconds} ms : Đã lấy xong kết quả Orc  : {resultOcr}");
 
             sw.Stop();
             return resultOcr;
