@@ -593,7 +593,7 @@ namespace AXService.Services.Implementations
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiSinh_Mau3Recogs(filePath));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiSinh_Mau3Recogs(filePath, _runOCR_On_A3_Old));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
@@ -616,7 +616,7 @@ namespace AXService.Services.Implementations
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiSinh_Mau4Recogs(filePath));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiSinh_Mau4Recogs(filePath,_runOCR_On_A3_Old));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
@@ -639,7 +639,7 @@ namespace AXService.Services.Implementations
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiTu(filePath));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiTu(filePath, _runOCR_On_A3_Old));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
@@ -662,7 +662,7 @@ namespace AXService.Services.Implementations
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KetHon(filePath));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KetHon(filePath, _runOCR_On_A3_Old));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
@@ -678,7 +678,7 @@ namespace AXService.Services.Implementations
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3NhanConNuoi(filePath));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3NhanConNuoi(filePath, _runOCR_On_A3_Old));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
