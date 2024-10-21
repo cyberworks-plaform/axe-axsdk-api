@@ -70,7 +70,7 @@ namespace AXService.Services.Implementations
             }
         }
 
-        public async Task<string> RecognizeFace(string filePath)
+        public async Task<object> RecognizeFace(string filePath)
         {
             try
             {

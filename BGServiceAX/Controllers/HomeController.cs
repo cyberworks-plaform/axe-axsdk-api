@@ -1079,25 +1079,26 @@ namespace BGServiceAX.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("face/recognize-face")]
-        public async Task<GenericResponse<string>> RecognizeFace(string filepath)
+        public async Task<IActionResult> RecognizeFace(string filepath)
         {
             try
             {
                 var result = await _cyberWorkService.RecognizeFace(filepath);
-                if (result == null)
+
+                return new ContentResult
                 {
-                    return GenericResponse<string>.ResultWithData("Không có dữ liệu");
-                }
-                return GenericResponse<string>.ResultWithData(result);
+                    ContentType = "application/json",
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Content = result is string ? (string)result : JsonConvert.SerializeObject(result)
+                };
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
                 Log.Error(ex.StackTrace);
-                return GenericResponse<string>.ResultWithError((int)HttpStatusCode.BadRequest, ex.Message, ex.Message);
+                return StatusCode(400, $"Đã có lỗi xảy ra, liên hệ quản trị viên");
             }
         }
-
         [HttpGet]
         [Route("face/set-server-address")]
         public void SetServerAddress(string idServer)
