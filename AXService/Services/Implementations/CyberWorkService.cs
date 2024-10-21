@@ -15,11 +15,18 @@ namespace AXService.Services.Implementations
     {
         private readonly string TempSavePath;
         private readonly IInternalOcrSerivce _ocrService;
+        private readonly IConfiguration _configuration;
+        private readonly string _axSvAddress;
 
         public CyberWorkService(IConfiguration configuration, IInternalOcrSerivce internalOcrSerivce)
         {
             TempSavePath = configuration["StorageTempFile"];
             _ocrService = internalOcrSerivce;
+            _configuration = configuration;
+            _axSvAddress = _configuration["AxConfigs:Address"] ?? "localhost";
+
+            APIs.SetServerAddress(_axSvAddress);
+            APIs.FaceAPI.SetServerAddress(_axSvAddress);
         }
 
 
