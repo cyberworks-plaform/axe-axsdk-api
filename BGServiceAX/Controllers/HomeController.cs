@@ -3,6 +3,10 @@ using AXService.Enums;
 using AXService.Helper;
 using AXService.Services.Interfaces;
 using BGServiceAX.Attributes;
+using Ce.Constant.Lib.Dtos;
+using Microsoft.AspNetCore.Authorization;
+
+
 //using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -22,15 +26,17 @@ namespace BGServiceAX.Controllers
     {
         private readonly IAutoInsuranceSerivce _autoInsuranceSerivce;
         private readonly IProcessRequestService _processRequestService;
+        private readonly ICyberWorkService _cyberWorkService;
         //private readonly string H_Sender = "X-Sender";
         //private readonly string H_Function_Code = "X-Function-Code";
         private readonly string H_Request_Id = "X-Request-Id";
         private readonly string H_ContentType = "Content-Type";
 
-        public HomeController(IAutoInsuranceSerivce autoInsuranceSerivce, IProcessRequestService processRequestService)
+        public HomeController(IAutoInsuranceSerivce autoInsuranceSerivce, IProcessRequestService processRequestService, ICyberWorkService cyberWorkService)
         {
             _autoInsuranceSerivce = autoInsuranceSerivce;
             _processRequestService = processRequestService;
+            _cyberWorkService = cyberWorkService;
         }
 
         [HttpPost]
@@ -1064,6 +1070,62 @@ namespace BGServiceAX.Controllers
             //}
 
             return null;
+        }
+        /// <summary>
+        /// API phục vụ xác thực khuôn mặt
+        /// input là đường dẫn hình ảnh cần xác thực
+        /// </summary>
+        /// <param name="filepath"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("face/recognize-face")]
+        public async Task<GenericResponse<string>> RecognizeFace(string filepath)
+        {
+            try
+            {
+                var result = await _cyberWorkService.RecognizeFace(filepath);
+                if (result == null)
+                {
+                    return GenericResponse<string>.ResultWithData("Không có dữ liệu");
+                }
+                return GenericResponse<string>.ResultWithData(result);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                Log.Error(ex.StackTrace);
+                return GenericResponse<string>.ResultWithError((int)HttpStatusCode.BadRequest, ex.Message, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("face/set-server-address")]
+        public void SetServerAddress(string idServer)
+        {
+            try
+            {
+                _cyberWorkService.SetServerAddress(idServer);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                Log.Error(ex.StackTrace);
+            }
+        }
+
+        [HttpGet]
+        [Route("face/create-face-database")]
+        public void CreateFaceDatabase(string folder)
+        {
+            try
+            {
+                _cyberWorkService.CreateFaceDatabase(folder);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                Log.Error(ex.StackTrace);
+            }
         }
 
     }

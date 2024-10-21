@@ -1,6 +1,8 @@
 ﻿using AXService.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using OneAPI;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -67,5 +69,44 @@ namespace AXService.Services.Implementations
                     return string.Empty;
             }
         }
+
+        public async Task<string> RecognizeFace(string filePath)
+        {
+            try
+            {
+                var rs = await Task.FromResult(APIs.FaceAPI.RecognizeFace(filePath));
+                return JsonConvert.SerializeObject(rs);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+        public void CreateFaceDatabase(string folder)
+        {
+            try
+            {
+                APIs.FaceAPI.CreateFaceDatabase(folder);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+        public void SetServerAddress(string idSever)
+        {
+            try
+            {
+                APIs.FaceAPI.SetServerAddress(idSever);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
     }
 }
