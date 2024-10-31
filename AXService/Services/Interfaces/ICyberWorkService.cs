@@ -9,7 +9,7 @@ namespace AXService.Services.Interfaces
     {
         Task<string> GetOcrRegion(string base64String);
         Task<object> RecognizeFace(string filePath);
-        void CreateFaceDatabase(string folder);
+        Task CreateFaceDatabase(string folder);
         void SetServerAddress(string idSever);
     }
 }

@@ -90,11 +90,11 @@ namespace AXService.Services.Implementations
                 throw ex;
             }
         }
-        public void CreateFaceDatabase(string folder)
+        public async Task CreateFaceDatabase(string folder)
         {
             try
             {
-                APIs.FaceAPI.CreateFaceDatabase(folder);
+                await Task.Run(() => { APIs.FaceAPI.CreateFaceDatabase(folder); });
             }
             catch (Exception ex)
             {

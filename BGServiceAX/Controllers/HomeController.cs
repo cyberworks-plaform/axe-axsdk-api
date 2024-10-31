@@ -1116,11 +1116,11 @@ namespace BGServiceAX.Controllers
 
         [HttpGet]
         [Route("face/create-face-database")]
-        public void CreateFaceDatabase(string folder)
+        public async Task CreateFaceDatabase(string folder)
         {
             try
             {
-                _cyberWorkService.CreateFaceDatabase(folder);
+               await _cyberWorkService.CreateFaceDatabase(folder);
             }
             catch (Exception ex)
             {
