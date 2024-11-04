@@ -19,16 +19,16 @@ public class Program
     private static IConfiguration _configuration { get; set; }
     private static IHttpClientFactory _httpClientFactory { get; set; }
     private static HttpClient _httpClient { get; set; }
-private static void Init(string[] args)
+    private static void Init(string[] args)
     {
         var builder = new ConfigurationBuilder();
         builder.SetBasePath(Directory.GetCurrentDirectory())
            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-        
+
         _configuration = builder.Build();
 
-       _httpClient = new HttpClient();
-        
+        _httpClient = new HttpClient();
+
     }
     private static object CallAXDirect(string filePath)
     {
@@ -42,7 +42,7 @@ private static void Init(string[] args)
 
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri);
         var requestBody = new Dictionary<string, string>();
-        requestBody.Add("filePath",filePath);
+        requestBody.Add("filePath", filePath);
         var httpContentStr = JsonConvert.SerializeObject(requestBody);
 
         requestMessage.Content = new StringContent(httpContentStr, Encoding.UTF8, "application/json");
@@ -64,66 +64,96 @@ private static void Init(string[] args)
             var axsdk_address = _configuration["AxSDKAddress"];
             var dataFolder = _configuration["DataFolder:Path"];
             var dataFolder_Filter = _configuration["DataFolder:Filter"];
+            var numOfFileSimulation = long.Parse(_configuration["NumOfFileSimulation"]);
+           
             if (string.IsNullOrEmpty(dataFolder_Filter))
             {
                 dataFolder_Filter = "*.*";
             }
 
             var apiAddress = _configuration["APIAddress"];
+            string axServer=string.Empty;
             bool isUsingAPI = string.IsNullOrEmpty(_configuration["IsUseAPI"]) ? false : bool.Parse(_configuration["IsUseAPI"]);
             if (isUsingAPI)
             {
+                axServer = apiAddress;
                 Console.Write($"Connecting API at address: {apiAddress}... ");
                 var checkconnect = CheckAPIAddress(apiAddress);
                 Console.WriteLine($"Connected!");
             }
             else
             {
-
+                axServer=axsdk_address;
                 Console.Write($"Connecting AX at address: {axsdk_address}... ");
                 APIs.SetServerAddress(axsdk_address);
                 var checkLicnese = APIs.CheckLicense();
                 Console.WriteLine($"Connected! CheckLicense status: {checkLicnese}");
             }
             var directoryInfo = new DirectoryInfo(dataFolder);
-
+            
             var totalFile = directoryInfo.GetFiles(dataFolder_Filter, SearchOption.AllDirectories).Length;
+            if (numOfFileSimulation < totalFile)
+            {
+                numOfFileSimulation = totalFile;
+            }
             Console.WriteLine($"Total file: {totalFile} in {dataFolder}");
+            Console.WriteLine($"Number of file simulation: {numOfFileSimulation}");
             Console.WriteLine("--------------------------------------------");
             var sw = new Stopwatch();
             long totalTime = 0;
             var fileIndx = 0;
-            foreach (var file in directoryInfo.GetFiles(dataFolder_Filter, SearchOption.AllDirectories))
+            var isStop = false;
+            var isOCRSuccess = false;
+            while (!isStop)
             {
-                try
+                foreach (var file in directoryInfo.GetFiles(dataFolder_Filter, SearchOption.AllDirectories))
                 {
-                    fileIndx++;
-                    Console.WriteLine($"--> [{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] Start ocr file {file.Name} - File {fileIndx}/{totalFile}");
-                    sw.Restart();
-                    object result;
-                    if (isUsingAPI)
+
+                    try
                     {
-                        result = CallAXOverAPIWrapper(apiAddress, file.FullName);
+                        sw.Restart();
+                        
+                        fileIndx++;
+                        Console.WriteLine($"--> \t[{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] \tStart ocr file \t{file.Name} \tServer: \t{axServer} \tFile \t{fileIndx}/{numOfFileSimulation}");
+                        object result;
+                        if (isUsingAPI)
+                        {
+                            result = CallAXOverAPIWrapper(apiAddress, file.FullName);
+                        }
+                        else
+                        {
+                            result = CallAXDirect(file.FullName);
+                        }
+                        isOCRSuccess = true;
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        result = CallAXDirect(file.FullName);
+                        isOCRSuccess = false;
+                        Console.WriteLine(ex.ToString());
                     }
-                    sw.Stop();
-                    totalTime += sw.ElapsedMilliseconds;
-                    Console.WriteLine($"--> [{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] End ocr file {file.Name} - Duration: {sw.ElapsedMilliseconds} ms");
+                    finally
+                    {
+                        sw.Stop();
+                        totalTime += sw.ElapsedMilliseconds;
+                        Console.WriteLine($"--> \t[{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] \tEnd ocr file \t{file.Name} \tSuccess: {isOCRSuccess} \tDuration: \t{sw.ElapsedMilliseconds} ms");
+                        
+                    }
                 }
-                catch (Exception ex)
+                if (fileIndx >= numOfFileSimulation)
                 {
-                    Console.WriteLine(ex.ToString());
+                    isStop = true;
                 }
+
+                Console.WriteLine("--------------------------------------------");
+                var totalSecond = totalTime / 1000;
+                var everageTime = totalTime / fileIndx;
+                Console.WriteLine($"Process total file {fileIndx} in {totalSecond} s - Everage: {everageTime} ms");
+                Console.WriteLine("--------------------------------------------");
 
             }
 
-            Console.WriteLine("--------------------------------------------");
-            var totalSecond = totalTime / 1000;
-            var everageTime = totalTime / totalFile;
-            Console.WriteLine($"Process total file {totalFile} in {totalSecond} s - Everage: {everageTime} ms");
+            Console.WriteLine("Done");
+
         }
         catch (Exception ex)
         {
