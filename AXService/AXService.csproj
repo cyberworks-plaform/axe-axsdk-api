@@ -20,15 +20,18 @@
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.3.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.8.1" />
-    <PackageReference Include="System.ServiceModel.Primitives" Version="4.8.1" />
-    <PackageReference Include="System.ServiceModel.Security" Version="4.8.1" />
+    <PackageReference Include="System.ServiceModel.Http" Version="4.10.3" />
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.10.3" />
+    <PackageReference Include="System.ServiceModel.Security" Version="4.10.3" />
     <PackageReference Include="System.ServiceProcess.ServiceController" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="AX-API">
       <HintPath>C:\Program Files\Cyber Eye Technology\AX-SDK\lib\AX-API.dll</HintPath>
+    </Reference>
+    <Reference Include="AxDesApiStandard">
+      <HintPath>Lib\ax-des\AxDesApiStandard.dll</HintPath>
     </Reference>
     <Reference Include="Table">
       <HintPath>Module\TableSegment\dll\Table.dll</HintPath>
@@ -37,6 +40,15 @@
 
   <ItemGroup>
     <None Update="Lib\AX-API.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Lib\ax-des\AxDesApiFramework.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Lib\ax-des\AxDesApiStandard.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Lib\ax-des\model\cw.giaychungnhanhokinhdoanh.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Module\TableSegment\A3_json\formKhaiSinh_3Record_new.json">
@@ -126,6 +138,10 @@
     <None Update="Module\TableSegment\dll\Table.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Lib\ax-des\model\" />
   </ItemGroup>
 
 </Project>

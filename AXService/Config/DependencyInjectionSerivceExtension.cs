@@ -18,6 +18,7 @@ namespace AXService.Config
             services.AddScoped<IExternalOcrService, ExternalOcrService>();
             services.AddScoped<ICyberWorkService, CyberWorkService>();
             services.AddScoped<IProcessRequestService, ProcessRequestService>();
+            services.AddScoped<IAxdesService, AxdesService>();
         }
     }
 }

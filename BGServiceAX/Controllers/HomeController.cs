@@ -22,15 +22,17 @@ namespace BGServiceAX.Controllers
     {
         private readonly IAutoInsuranceSerivce _autoInsuranceSerivce;
         private readonly IProcessRequestService _processRequestService;
+        private readonly IAxdesService _axdesService;
         //private readonly string H_Sender = "X-Sender";
         //private readonly string H_Function_Code = "X-Function-Code";
         private readonly string H_Request_Id = "X-Request-Id";
         private readonly string H_ContentType = "Content-Type";
 
-        public HomeController(IAutoInsuranceSerivce autoInsuranceSerivce, IProcessRequestService processRequestService)
+        public HomeController(IAutoInsuranceSerivce autoInsuranceSerivce, IProcessRequestService processRequestService,IAxdesService axdesService)
         {
             _autoInsuranceSerivce = autoInsuranceSerivce;
             _processRequestService = processRequestService;
+            _axdesService = axdesService;
         }
 
         [HttpPost]
@@ -1034,6 +1036,7 @@ namespace BGServiceAX.Controllers
             return Ok("pong");
         }
 
+       
 
         private void AppendResponse(HeaderRequestInfo info)
         {

@@ -19,6 +19,7 @@ namespace AXService.Services.Implementations
     {
         #region Init
         private readonly IInternalOcrSerivce _ocrService;
+        private readonly IAxdesService _axdesService;
         private readonly ITableSegmentationService _tableSegmentService;
         private readonly IAmzFileClientFactory _amzFileClientFactory;
         private readonly string TempSavePath;
@@ -27,6 +28,7 @@ namespace AXService.Services.Implementations
 
         public ProcessRequestService(IConfiguration configuration,
             IInternalOcrSerivce internalOcrSerivce,
+            IAxdesService axdesService,
             ITableSegmentationService tableSegmentService,
             IAmzFileClientFactory amzFileClientFactory)
         {
@@ -36,6 +38,7 @@ namespace AXService.Services.Implementations
             _ocrService = internalOcrSerivce;
             _tableSegmentService = tableSegmentService;
             _amzFileClientFactory = amzFileClientFactory;
+            _axdesService = axdesService;
         }
         #endregion
         public async Task<object> ProcessRequest(BasicFileRequest request, string endpoint, HeaderRequestInfo headerInfo, params string[] args)
@@ -50,7 +53,7 @@ namespace AXService.Services.Implementations
 
                 var sw = new Stopwatch();
                 sw.Start();
-                Log.Warning($"Start handle request : {requestId} - Request.FileId= {request.fileId} ");
+                Log.Warning($"Start handle request : {requestId} - Request.FileId= {request.fileId} - Request EndPoint: {endpoint} ");
                 var filePath = request.filePath;
                 var isCreateStempFile = false;
                 if (string.IsNullOrEmpty(filePath))
@@ -193,6 +196,12 @@ namespace AXService.Services.Implementations
                     return async (string path) => await _tableSegmentService.Segment_TuPhapA3KhaiSinh(path, 0);
                 case CommonEnum.FunctionToCall.SegmentTuPhapA3KhaiTu:
                     return async (string path) => await _tableSegmentService.Segment_TuPhapA3KhaiTu(path, 0);
+
+                #region axdes function mapping
+                case CommonEnum.FunctionToCallAxDES.Form_GiayChungNhanDangKyHoKinhDoanh:
+                        return async (string path) => await _axdesService.Form_GiayChungNhanDangKyHoKinhDoanh(path);
+                #endregion
+
                 case "img2text":
                     if (args == null || args.Length < 1)
                     {
