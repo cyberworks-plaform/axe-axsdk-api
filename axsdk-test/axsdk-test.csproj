@@ -16,9 +16,9 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.3" />
     <PackageReference Include="System.Drawing.Primitives" Version="4.0.0" />
-    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.8.1" />
-    <PackageReference Include="System.ServiceModel.Primitives" Version="4.8.1" />
-    <PackageReference Include="System.ServiceModel.Security" Version="4.8.1" />
+    <PackageReference Include="System.ServiceModel.Http" Version="4.10.3" />
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.10.3" />
+    <PackageReference Include="System.ServiceModel.Security" Version="4.10.3" />
     <PackageReference Include="System.ServiceProcess.ServiceController" Version="8.0.1" />
   </ItemGroup>
 
@@ -27,6 +27,9 @@
     <Reference Include="AX-API">
       <HintPath>AX-API.dll</HintPath>
     </Reference>
+    <Reference Include="AxDesApiStandard">
+      <HintPath>Lib\ax-des\AxDesApiStandard.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
@@ -34,6 +37,18 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="AX-API.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Lib\AX-API.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Lib\ax-des\AxDesApiFramework.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Lib\ax-des\AxDesApiStandard.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Lib\ax-des\model\cw.giaychungnhanhokinhdoanh.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

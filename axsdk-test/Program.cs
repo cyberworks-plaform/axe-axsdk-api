@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json;
+using AxDesApi;
 
 
 
@@ -59,6 +60,7 @@ public class Program
 
     public static void RunAx()
     {
+        Console.WriteLine("Start Run AXSDK...");
         try
         {
             var axsdk_address = _configuration["AxSDKAddress"];
@@ -162,10 +164,37 @@ public class Program
         }
     }
 
+    public static void TestAxDes()
+    {
+        try
+        {
+            Console.OutputEncoding = Encoding.UTF8;
+            Console.WriteLine("Start Run TestAxDes...");
+            var axsdk_address = "172.16.15.131";
+            var modelFolder = @"\\172.16.15.131\filedata\axdes-model\cw.giaychungnhanhokinhdoanh.zip";
+
+
+            string filePath = @"\\172.16.15.131\filedata\FileTemp\giay-cn-ho-kd\10.pdf";
+
+            AxDesApiManager.SetHost(axsdk_address);
+            var sw = new Stopwatch();
+            sw.Restart();
+            Console.WriteLine("Start calling  BocTachTheoMoHinh() ...");
+            var result = AxDesApi.Extraction.BocTachTheoMoHinh(modelFolder, filePath, string.Empty, isKeyByNameField: true);
+            sw.Stop();
+            Console.WriteLine($"End calling  BocTachTheoMoHinh() \t Duration: {sw.ElapsedMilliseconds} ms \t Result below:");
+            Console.WriteLine(JsonConvert.SerializeObject(result,Formatting.Indented));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
     public static void Main(string[] args)
     {
         Init(args);
-        RunAx();
+        //RunAx();
+        TestAxDes();
     }
 
 
