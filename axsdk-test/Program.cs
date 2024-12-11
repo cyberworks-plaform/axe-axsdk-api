@@ -193,8 +193,8 @@ public class Program
     public static void Main(string[] args)
     {
         Init(args);
-        //RunAx();
-        TestAxDes();
+        RunAx();
+        //TestAxDes();
     }
 
 
