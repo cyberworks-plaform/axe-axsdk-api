@@ -66,5 +66,10 @@ namespace AXService.Enums
 
 
         }
+
+        public struct FunctionToCallAxDES
+        {
+            public const string Form_GiayChungNhanDangKyHoKinhDoanh = "Form_GiayChungNhanDangKyHoKinhDoanh";
+        }
     }
 }
