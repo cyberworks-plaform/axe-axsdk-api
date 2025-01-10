@@ -114,7 +114,6 @@ public class Program
                     try
                     {
                         sw.Restart();
-                        
                         fileIndx++;
                         Console.WriteLine($"--> \t[{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] \tStart ocr file \t{file.Name} \tServer: \t{axServer} \tFile \t{fileIndx}/{numOfFileSimulation}");
                         object result;

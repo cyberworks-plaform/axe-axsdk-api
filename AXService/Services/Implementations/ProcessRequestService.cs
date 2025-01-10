@@ -3,7 +3,6 @@ using AXService.Dtos;
 using AXService.Enums;
 using AXService.Helper;
 using AXService.Services.Interfaces;
-using Azure.Core;
 using Microsoft.Extensions.Configuration;
 using OneAPI;
 using Serilog;
@@ -21,7 +20,6 @@ namespace AXService.Services.Implementations
         private readonly IInternalOcrSerivce _ocrService;
         private readonly IAxdesService _axdesService;
         private readonly ITableSegmentationService _tableSegmentService;
-        private readonly IAmzFileClientFactory _amzFileClientFactory;
         private readonly string TempSavePath;
         private readonly bool isSaveFile;
 
@@ -29,15 +27,13 @@ namespace AXService.Services.Implementations
         public ProcessRequestService(IConfiguration configuration,
             IInternalOcrSerivce internalOcrSerivce,
             IAxdesService axdesService,
-            ITableSegmentationService tableSegmentService,
-            IAmzFileClientFactory amzFileClientFactory)
+            ITableSegmentationService tableSegmentService)
         {
             TempSavePath = configuration["StorageTempFile"];
             isSaveFile = configuration["IsSaveFile"] == "true";
             Directory.CreateDirectory(TempSavePath);
             _ocrService = internalOcrSerivce;
             _tableSegmentService = tableSegmentService;
-            _amzFileClientFactory = amzFileClientFactory;
             _axdesService = axdesService;
         }
         #endregion
@@ -199,7 +195,7 @@ namespace AXService.Services.Implementations
 
                 #region axdes function mapping
                 case CommonEnum.FunctionToCallAxDES.Form_GiayChungNhanDangKyHoKinhDoanh:
-                        return async (string path) => await _axdesService.Form_GiayChungNhanDangKyHoKinhDoanh(path);
+                    return async (string path) => await _axdesService.Form_GiayChungNhanDangKyHoKinhDoanh(path);
                 #endregion
 
                 case "img2text":
@@ -209,7 +205,7 @@ namespace AXService.Services.Implementations
                     }
                     if (!Enum.IsDefined(typeof(CommonEnum.CharType), args[0].ToUpper()))
                     {
-                        throw new ArgumentException($"Parman charType must be: {string.Join(',', Enum.GetValues(typeof(CommonEnum.CharType)))}");
+                        throw new ArgumentException($"Parman charType must be: {string.Join(",", Enum.GetValues(typeof(CommonEnum.CharType)))}");
                     }
                     return async (string path) => await _ocrService.NhanDienVungOptional(path, (CommonEnum.CharType)Enum.Parse(typeof(CommonEnum.CharType), args[0].ToUpper()));
                 case "pdf-searchable":
@@ -219,7 +215,7 @@ namespace AXService.Services.Implementations
                     }
                     if (!Enum.IsDefined(typeof(CommonEnum.CharType), args[0].ToUpper()))
                     {
-                        throw new ArgumentException($"Parman charType must be: {string.Join(',', Enum.GetValues(typeof(CommonEnum.CharType)))}");
+                        throw new ArgumentException($"Parman charType must be: {string.Join(",", Enum.GetValues(typeof(CommonEnum.CharType)))}");
                     }
                     return async (string path) => await _ocrService.TaoFilePDFSearch(path, (CommonEnum.CharType)Enum.Parse(typeof(CommonEnum.CharType), args[0].ToUpper()));
                 default:
@@ -242,11 +238,9 @@ namespace AXService.Services.Implementations
                 File.WriteAllBytes(filepath, Convert.FromBase64String(request.fileBase64));
                 return filepath;
             }
-            else //DownloadFile
+            else //throw exception
             {
-                var amzS3client = _amzFileClientFactory.Create();
-                var filePath = await amzS3client.DownloadFileFromS3Url(fileNameWithOutExt, request.fileUrl);
-                return filePath;
+                throw new Exception("SaveFileOfRequest: FileBase64 is null");
             }
 
         }

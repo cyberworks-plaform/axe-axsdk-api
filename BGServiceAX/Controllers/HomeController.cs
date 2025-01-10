@@ -20,7 +20,6 @@ namespace BGServiceAX.Controllers
     [Produces("application/json")]
     public class HomeController : Controller
     {
-        private readonly IAutoInsuranceSerivce _autoInsuranceSerivce;
         private readonly IProcessRequestService _processRequestService;
         private readonly IAxdesService _axdesService;
         //private readonly string H_Sender = "X-Sender";
@@ -28,9 +27,8 @@ namespace BGServiceAX.Controllers
         private readonly string H_Request_Id = "X-Request-Id";
         private readonly string H_ContentType = "Content-Type";
 
-        public HomeController(IAutoInsuranceSerivce autoInsuranceSerivce, IProcessRequestService processRequestService,IAxdesService axdesService)
+        public HomeController(IProcessRequestService processRequestService,IAxdesService axdesService)
         {
-            _autoInsuranceSerivce = autoInsuranceSerivce;
             _processRequestService = processRequestService;
             _axdesService = axdesService;
         }
@@ -187,68 +185,6 @@ namespace BGServiceAX.Controllers
                     StatusCode = (int)HttpStatusCode.OK,
                     Content = result is string ? (string)result : JsonConvert.SerializeObject(result)
                 };
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex.Message);
-                Log.Error(ex.StackTrace);
-                return StatusCode(400, $"Đã có lỗi xảy ra, liên hệ quản trị viên");
-            }
-        }
-
-        [HttpPost]
-        [Route("misc/text-compare")]
-        [Produces("application/json")]
-        //        [FilterSupportTagOnly("Insurance", "CyberWork")]
-        public async Task<IActionResult> ProcessCompareText([FromBody] CompareTextRequest request, string output = "json")
-        {
-            //var sender = Request.Headers[H_Sender].ToString();
-            //var function_code = Request.Headers[H_Function_Code].ToString();
-            var request_id = Request.Headers[H_Request_Id].ToString();
-            var contentType = Request.Headers[H_ContentType].ToString();
-            if (output.ToLower() != "json" && output.ToLower() != "html")
-            {
-                return StatusCode(400, "param output không hợp lệ");
-            }
-            if (contentType != "application/json")
-            {
-                return StatusCode(400, "Chỉ nhận Content-Type:application/json ");
-            }
-            if (string.IsNullOrEmpty(request_id))
-            {
-                // return StatusCode(400, "Thiếu Header");
-            }
-            //if (function_code != "compare-texts")
-            //{
-            //    return StatusCode(400, "Sai function_code");
-            //}
-            try
-            {
-                //Response.Headers.Add(H_Sender, sender);
-                //Response.Headers.Add(H_Function_Code, function_code);
-                Response.Headers.Add(H_Request_Id, request_id);
-                var result = await _autoInsuranceSerivce.ProcessCompareText(request, request_id, output);
-                contentType = output.ToLower() == "json" ? "application/json" : "text/html";
-                //Response.Headers.Add(H_ContentType, contentType);
-
-                if (contentType == "application/json")
-                {
-                    return new ContentResult
-                    {
-                        ContentType = "application/json",
-                        StatusCode = (int)HttpStatusCode.OK,
-                        Content = result
-                    };
-                }
-                else
-                {
-                    return new ContentResult
-                    {
-                        ContentType = "text/html",
-                        StatusCode = (int)HttpStatusCode.OK,
-                        Content = result
-                    };
-                }
             }
             catch (Exception ex)
             {

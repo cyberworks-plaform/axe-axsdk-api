@@ -1,8 +1,6 @@
 ﻿using AXService.Config;
 using AXService.Services.Implementations;
 using AXService.Services.Interfaces;
-using Azure.Storage.Blobs;
-using Ce.Interaction.Lib.StartupExtensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using System;
+using Swashbuckle.AspNetCore.Swagger; 
 
 namespace BGServiceAX
 {
@@ -31,13 +30,9 @@ namespace BGServiceAX
         public void ConfigureServices(IServiceCollection services)
         {
             // Config BaseHttpClient to call other service api
-            services.AddBaseHttpClient();
-            services.AddHttpClient<IAmzS3FileClient, AmzS3FileClient>();   //Transient, don't Inject to Scope or Singleton
-            services.AddSingleton<IAmzFileClientFactory, AmzFileClientFactory>();
+            //services.AddBaseHttpClient();
             services.AddScoped<ISimpleUserService, SimpleUserService>();
-            services.AddScoped<IAutoInsuranceSerivce, AutoInsuranceSerivce>();
             services.AddScoped<IInternalOcrSerivce, InternalOcrSerivce>();
-            services.AddSingleton(x => new BlobServiceClient(Configuration["AzureBlob:ConnectionString"]));
             services.DependencyInjectionService();
             services.AddControllers();
             services.AddSwaggerGen(options =>
@@ -78,10 +73,10 @@ namespace BGServiceAX
 
             });
 
-    //        services.AddAuthentication("BasicAuthentication")
-    //.AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+            //        services.AddAuthentication("BasicAuthentication")
+            //.AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
 
-            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -95,7 +90,6 @@ namespace BGServiceAX
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
             app.UseAuthentication();
             //app.UseAuthorization();
 
