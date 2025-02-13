@@ -34,16 +34,16 @@ namespace AXService.Services.Implementations
             AxDesApiManager.SetHost(_axSvAddress);
         }
 
-        public async Task<object> FormExtractByModelName(string filePath,string modelName)
+        public async Task<object> FormExtractByModelName(string filePath, string modelName)
         {
             try
             {
-                if(string.IsNullOrEmpty(modelName))
+                if (string.IsNullOrEmpty(modelName))
                 {
                     throw new ArgumentNullException(nameof(modelName));
                 }
-                
-                if(false==modelName.ToUpper().EndsWith(".ZIP"))
+
+                if (false == modelName.ToUpper().EndsWith(".ZIP"))
                 {
                     modelName = modelName + ".zip";
                 }
@@ -66,7 +66,7 @@ namespace AXService.Services.Implementations
             }
         }
 
-        public async Task<List<string>>GetListModelName()
+        public async Task<List<string>> GetListModelName()
         {
             try
             {
@@ -91,20 +91,31 @@ namespace AXService.Services.Implementations
         /// </summary>
         /// <param name="axdesResult"></param>
         /// <returns></returns>
-        private Dictionary<string,InformationField> ConvertResultToAxSDKFormat(ExtractModels.ExtractResult axdesResult)
+        private Dictionary<string, InformationField> ConvertResultToAxSDKFormat(ExtractModels.ExtractResult axdesResult)
         {
-            var desResult = new Dictionary<string,InformationField>();
+            var desResult = new Dictionary<string, InformationField>();
             foreach (var item in axdesResult.Result)
             {
                 desResult.Add(item.Key, new InformationField
                 {
-                     Area = new System.Drawing.Rectangle(item.Value.Area.x, item.Value.Area.y, item.Value.Area.width, item.Value.Area.height),
-                     PageSize = new System.Drawing.Size(item.Value.PageSize.width,item.Value.PageSize.height),
-                     Confidence = item.Value.Confidence,
-                     Page = item.Value.Page,
-                     Value = item.Value.Value,
-                     Name = item.Key, // trong AXDES chưa có name => Tạm lấy Key làm Name
+                    Area = new System.Drawing.Rectangle(item.Value.Area.x, item.Value.Area.y, item.Value.Area.width, item.Value.Area.height),
+                    PageSize = new System.Drawing.Size(item.Value.PageSize.width, item.Value.PageSize.height),
+                    Confidence = item.Value.Confidence,
+                    Page = item.Value.Page,
+                    Value = item.Value.Value,
+                    Name = item.Key, // trong AXDES chưa có name => Tạm lấy Key làm Name
                 });
+
+                //Trường hợp đặc biệt: trường thông tin ở dạng dấu tích
+                if (item.Value != null
+                    && !string.IsNullOrEmpty(item.Value.Value)
+                    && item.Value.Value.Contains(nameof(InformationField.Confidence))
+                    && item.Value.Value.Contains(nameof(InformationField.PageSize)))
+                {
+                    var listTempValue = JsonConvert.DeserializeObject<List<InformationField>>(item.Value.Value);
+                    desResult[item.Key].Value = listTempValue?.FirstOrDefault().Value;
+
+                }
             }
             return desResult;
         }
