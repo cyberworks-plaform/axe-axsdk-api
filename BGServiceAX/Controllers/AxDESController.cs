@@ -4,9 +4,11 @@ using AXService.Helper;
 using AXService.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 using Serilog;
 using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -30,16 +32,72 @@ namespace AXAPIWrapper.Controllers
             _axdesService = axdesService;
         }
 
+        /// <summary>
+        /// Get root path that contain model
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("RootPathOfModel")]
+        public async Task<IActionResult> RootPathOfModel()
+        {
+            return Ok( await _axdesService.GetRooPathOfModel());
+        }
+
+        /// <summary>
+        /// Get list model name
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetModelName")]
+        public async Task<IActionResult> GetListModelName()
+        {
+            var result = await _axdesService.GetListModelName();
+
+            return new ContentResult
+            {
+                ContentType = "application/json",
+                StatusCode = (int)HttpStatusCode.OK,
+                Content =JsonConvert.SerializeObject(result),
+                
+            };
+        }
+
+        /// <summary>
+        /// List all api that can be used by client to extract form
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetAvailableAPI")]
+        public async Task<IActionResult> GetAvailableAPIbyModelName()
+        {
+            var result = await _axdesService.GetListModelName();
+            var controllerName = RouteData.Values["Controller"];
+            var apis = result.Select(x => $"{controllerName}/form/{x.Replace(".zip", "")}").ToList();
+            return new ContentResult
+            {
+                ContentType = "application/json",
+                StatusCode = (int)HttpStatusCode.OK,
+                Content = JsonConvert.SerializeObject(apis),
+
+            };
+        }
+
+        /// <summary>
+        /// Bóc tách form biểu mẫu với modelName được truyền vào từ phía client
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="modelName"></param>
+        /// <returns></returns>
         [HttpPost]
-        [Route("form/giay-chung-nhan-ho-kinh-doanh")]
-        public async Task<IActionResult> Form_GiayChungNhanDangKyHoKinhDoanh([FromBody] BasicFileRequest request)
+        [Route("form/{modelName}")]
+        public async Task<IActionResult> FormExtractByModelName([FromBody] BasicFileRequest request, string modelName)
         {
             //Header process
             var headerInfo = HeaderRequestHelper.GetHeaderInfo(Request);
             AppendResponse(headerInfo);
             try
             {
-                var result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCallAxDES.Form_GiayChungNhanDangKyHoKinhDoanh, headerInfo);
+                var result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCallAxDES.FormExtractByModelName, headerInfo,modelName);
                 return new ContentResult
                 {
                     ContentType = "application/json",
@@ -49,9 +107,9 @@ namespace AXAPIWrapper.Controllers
             }
             catch (Exception ex)
             {
-                string msg = "Error processing API: form/giay-chung-nhan-ho-kinh-doanh";
-                Log.Error(ex,msg);
-                return StatusCode(500,msg);
+                string msg = $"Error calling extract form by modelName = {modelName} with message: {ex.Message}";
+                Log.Error(ex, msg);
+                return StatusCode(500, msg);
             }
         }
 

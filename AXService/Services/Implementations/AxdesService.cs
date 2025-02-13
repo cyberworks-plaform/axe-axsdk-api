@@ -34,25 +34,29 @@ namespace AXService.Services.Implementations
             AxDesApiManager.SetHost(_axSvAddress);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="filePath"></param>
-        /// <returns></returns>
-        public async Task<object> Form_GiayChungNhanDangKyHoKinhDoanh(string filePath)
+        public async Task<object> FormExtractByModelName(string filePath,string modelName)
         {
-            var modelName = "cw.giaychungnhanhokinhdoanh.zip";
             try
             {
+                if(string.IsNullOrEmpty(modelName))
+                {
+                    throw new ArgumentNullException(nameof(modelName));
+                }
+                
+                if(false==modelName.ToUpper().EndsWith(".ZIP"))
+                {
+                    modelName = modelName + ".zip";
+                }
+
                 var modelPath = Path.Combine(_axdesModelPath, modelName);
                 if (false == File.Exists(modelPath))
                 {
-                    throw new FileNotFoundException(modelPath);
+                    throw new FileNotFoundException($"File model is not exist: {modelPath}");
                 }
                 var axdesResponse = await AxDesApi.Extraction.BocTachTheoMoHinhAsync(modelPath, filePath, string.Empty, isKeyByNameField: true);
 
                 var res = ConvertResultToAxSDKFormat(axdesResponse.FirstOrDefault());
-                
+
                 return JsonConvert.SerializeObject(res);
             }
             catch (Exception ex)
@@ -62,6 +66,23 @@ namespace AXService.Services.Implementations
             }
         }
 
+        public async Task<List<string>>GetListModelName()
+        {
+            try
+            {
+                var modelList = Directory.GetFiles(_axdesModelPath, "*.zip").Select(x => Path.GetFileName(x)).ToList();
+                return modelList;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Error listing model name at root path {_axdesModelPath}");
+                throw;
+            }
+        }
+        public async Task<string> GetRooPathOfModel()
+        {
+            return _axdesModelPath;
+        }
         #region private function
         /// <summary>
         /// Convert result 

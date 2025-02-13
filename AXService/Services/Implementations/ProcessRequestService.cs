@@ -198,8 +198,14 @@ namespace AXService.Services.Implementations
                     return async (string path) => await _tableSegmentService.Segment_TuPhapA3KhaiTu(path, 0);
 
                 #region axdes function mapping
-                case CommonEnum.FunctionToCallAxDES.Form_GiayChungNhanDangKyHoKinhDoanh:
-                        return async (string path) => await _axdesService.Form_GiayChungNhanDangKyHoKinhDoanh(path);
+                case CommonEnum.FunctionToCallAxDES.FormExtractByModelName:
+                    if (args == null || args.Length < 1)
+                    {
+                        throw new ArgumentException("Missing Param: ModelName");
+                    }
+                    string modelName = args[0];
+                    return async (string path) => await _axdesService.FormExtractByModelName(path, modelName);
+
                 #endregion
 
                 case "img2text":
