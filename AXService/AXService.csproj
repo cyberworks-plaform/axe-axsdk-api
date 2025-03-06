@@ -42,9 +42,6 @@
     <None Update="Lib\AX-API.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Lib\ax-des\AxDesApiFramework.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Lib\ax-des\AxDesApiStandard.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

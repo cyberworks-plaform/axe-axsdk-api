@@ -34,25 +34,29 @@ namespace AXService.Services.Implementations
             AxDesApiManager.SetHost(_axSvAddress);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="filePath"></param>
-        /// <returns></returns>
-        public async Task<object> Form_GiayChungNhanDangKyHoKinhDoanh(string filePath)
+        public async Task<object> FormExtractByModelName(string filePath, string modelName)
         {
-            var modelName = "cw.giaychungnhanhokinhdoanh.zip";
             try
             {
+                if (string.IsNullOrEmpty(modelName))
+                {
+                    throw new ArgumentNullException(nameof(modelName));
+                }
+
+                if (false == modelName.ToUpper().EndsWith(".ZIP"))
+                {
+                    modelName = modelName + ".zip";
+                }
+
                 var modelPath = Path.Combine(_axdesModelPath, modelName);
                 if (false == File.Exists(modelPath))
                 {
-                    throw new FileNotFoundException(modelPath);
+                    throw new FileNotFoundException($"File model is not exist: {modelPath}");
                 }
                 var axdesResponse = await AxDesApi.Extraction.BocTachTheoMoHinhAsync(modelPath, filePath, string.Empty, isKeyByNameField: true);
 
                 var res = ConvertResultToAxSDKFormat(axdesResponse.FirstOrDefault());
-                
+
                 return JsonConvert.SerializeObject(res);
             }
             catch (Exception ex)
@@ -62,6 +66,23 @@ namespace AXService.Services.Implementations
             }
         }
 
+        public async Task<List<string>> GetListModelName()
+        {
+            try
+            {
+                var modelList = Directory.GetFiles(_axdesModelPath, "*.zip").Select(x => Path.GetFileName(x)).ToList();
+                return modelList;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Error listing model name at root path {_axdesModelPath}");
+                throw;
+            }
+        }
+        public async Task<string> GetRooPathOfModel()
+        {
+            return _axdesModelPath;
+        }
         #region private function
         /// <summary>
         /// Convert result 
@@ -70,20 +91,31 @@ namespace AXService.Services.Implementations
         /// </summary>
         /// <param name="axdesResult"></param>
         /// <returns></returns>
-        private Dictionary<string,InformationField> ConvertResultToAxSDKFormat(ExtractModels.ExtractResult axdesResult)
+        private Dictionary<string, InformationField> ConvertResultToAxSDKFormat(ExtractModels.ExtractResult axdesResult)
         {
-            var desResult = new Dictionary<string,InformationField>();
+            var desResult = new Dictionary<string, InformationField>();
             foreach (var item in axdesResult.Result)
             {
                 desResult.Add(item.Key, new InformationField
                 {
-                     Area = new System.Drawing.Rectangle(item.Value.Area.x, item.Value.Area.y, item.Value.Area.width, item.Value.Area.height),
-                     PageSize = new System.Drawing.Size(item.Value.PageSize.width,item.Value.PageSize.height),
-                     Confidence = item.Value.Confidence,
-                     Page = item.Value.Page,
-                     Value = item.Value.Value,
-                     Name = item.Key, // trong AXDES chưa có name => Tạm lấy Key làm Name
+                    Area = new System.Drawing.Rectangle(item.Value.Area.x, item.Value.Area.y, item.Value.Area.width, item.Value.Area.height),
+                    PageSize = new System.Drawing.Size(item.Value.PageSize.width, item.Value.PageSize.height),
+                    Confidence = item.Value.Confidence,
+                    Page = item.Value.Page,
+                    Value = item.Value.Value,
+                    Name = item.Key, // trong AXDES chưa có name => Tạm lấy Key làm Name
                 });
+
+                //Trường hợp đặc biệt: trường thông tin ở dạng dấu tích
+                if (item.Value != null
+                    && !string.IsNullOrEmpty(item.Value.Value)
+                    && item.Value.Value.Contains(nameof(InformationField.Confidence))
+                    && item.Value.Value.Contains(nameof(InformationField.PageSize)))
+                {
+                    var listTempValue = JsonConvert.DeserializeObject<List<InformationField>>(item.Value.Value);
+                    desResult[item.Key].Value = listTempValue?.FirstOrDefault().Value;
+
+                }
             }
             return desResult;
         }

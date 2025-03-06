@@ -7,6 +7,8 @@ namespace AXService.Services.Interfaces
 {
     public interface IAxdesService
     {
-        Task<object> Form_GiayChungNhanDangKyHoKinhDoanh(string filePath);
+        Task<object> FormExtractByModelName(string filePath, string modelName);
+        Task<List<string>> GetListModelName();
+        Task<string> GetRooPathOfModel();
     }
 }
