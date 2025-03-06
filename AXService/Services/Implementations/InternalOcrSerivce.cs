@@ -27,7 +27,7 @@ namespace AXService.Services.Implementations
             _axSvAddress = _configuration["AxConfigs:Address"] ?? "localhost";
             _runOCR_On_A3_Old = _configuration.GetValue<bool>("RunOCR_On_A3_Old", false);
             _RunOCR_On_A3_From_1999 = _configuration.GetValue<bool>("RunOCR_On_A3_From_1999", false);
-            
+
             APIs.SetServerAddress(_axSvAddress);
         }
 
@@ -289,19 +289,19 @@ namespace AXService.Services.Implementations
                 var rs = new List<OCRResult>();
                 if (charType == CharType.MIX)
                 {
-                  rs  = await Task.FromResult(APIs.ICRecognizer.RecognizeVBHC_CVT(filePath, out string outputJson));
-                    
+                    rs = await Task.FromResult(APIs.ICRecognizer.RecognizeVBHC_CVT(filePath, out string outputJson));
+
                 }
                 else if (charType == CharType.TEXT)
                 {
-                    rs= await Task.FromResult(APIs.API.RecognizeVBHC(filePath));
+                    rs = await Task.FromResult(APIs.API.RecognizeVBHC(filePath));
                 }
                 else
                 {
                     rs = await Task.FromResult(APIs.ICRecognizer.RecognizeCVT(filePath));
                     //Dictionary<string, string> output = new Dictionary<string, string>();
                     //output.Add("text", rs.ToString());
-                    
+
                 }
 
                 return rs;
@@ -401,11 +401,11 @@ namespace AXService.Services.Implementations
         /// </summary>
         /// <param name="filePath"></param>
         /// <returns></returns>
-        public async Task<object> ExtractTuPhapKhaiSinh(string filePath)
+        public async Task<object> ExtractTuPhapKhaiSinh(string filePath, bool createNormalizedImage)
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapKhaiSinh(filePath));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapKhaiSinh(filePath, createNormalizedImage));
                 return JsonConvert.SerializeObject(rs);
             }
             catch (Exception ex)
@@ -421,11 +421,11 @@ namespace AXService.Services.Implementations
         /// </summary>
         /// <param name="filePath"></param>
         /// <returns></returns>
-        public async Task<object> ExtractTuPhapKhaiTu(string filePath)
+        public async Task<object> ExtractTuPhapKhaiTu(string filePath, bool createNormalizedImage)
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapKhaiTu(filePath));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapKhaiTu(filePath, createNormalizedImage));
                 return JsonConvert.SerializeObject(rs);
             }
             catch (Exception ex)
@@ -441,11 +441,11 @@ namespace AXService.Services.Implementations
         /// </summary>
         /// <param name="filePath"></param>
         /// <returns></returns>
-        public async Task<object> ExtractTuPhapKetHon(string filePath)
+        public async Task<object> ExtractTuPhapKetHon(string filePath, bool createNormalizedImage)
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapKetHon(filePath));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapKetHon(filePath, createNormalizedImage));
                 return JsonConvert.SerializeObject(rs);
             }
             catch (Exception ex)
@@ -461,11 +461,11 @@ namespace AXService.Services.Implementations
         /// </summary>
         /// <param name="filePath"></param>
         /// <returns></returns>
-        public async Task<object> ExtractTuPhapChaMeCon(string filePath)
+        public async Task<object> ExtractTuPhapChaMeCon(string filePath, bool createNormalizedImage)
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapChaMeCon(filePath));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapChaMeCon(filePath, createNormalizedImage));
                 return JsonConvert.SerializeObject(rs);
             }
             catch (Exception ex)
@@ -480,11 +480,11 @@ namespace AXService.Services.Implementations
         /// </summary>
         /// <param name="filePath"></param>
         /// <returns>Dictionary<string, InformationField></returns>
-        public async Task<object> ExtractTuPhapCaiChinh(string filePath)
+        public async Task<object> ExtractTuPhapCaiChinh(string filePath, bool createNormalizedImage)
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapCaiChinh(filePath));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapCaiChinh(filePath, createNormalizedImage));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
@@ -503,11 +503,11 @@ namespace AXService.Services.Implementations
         /// <returns>
         /// Dictionary<string, InformationField>
         /// </returns>
-        public async Task<object> ExtractTuPhapGiamHo(string filePath)
+        public async Task<object> ExtractTuPhapGiamHo(string filePath, bool createNormalizedImage)
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapGiamHo(filePath));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapGiamHo(filePath, createNormalizedImage));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
@@ -526,11 +526,11 @@ namespace AXService.Services.Implementations
         /// <returns>
         /// Dictionary<string, InformationField>
         /// </returns>
-        public async Task<object> ExtractTuPhapLyHon(string filePath)
+        public async Task<object> ExtractTuPhapLyHon(string filePath, bool createNormalizedImage)
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapLyHon(filePath));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapLyHon(filePath, createNormalizedImage));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
@@ -549,11 +549,11 @@ namespace AXService.Services.Implementations
         /// <returns>
         /// Dictionary<string, InformationField>
         /// </returns>
-        public async Task<object> ExtractTuPhapNhanConNuoi(string filePath)
+        public async Task<object> ExtractTuPhapNhanConNuoi(string filePath, bool createNormalizedImage)
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapNhanConNuoi(filePath));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapNhanConNuoi(filePath, createNormalizedImage));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
@@ -570,11 +570,11 @@ namespace AXService.Services.Implementations
         /// </summary>
         /// <param name="filePath"></param>
         /// <returns></returns>
-        public async Task<object> ExtractTuPhapHonNhan(string filePath)
+        public async Task<object> ExtractTuPhapHonNhan(string filePath, bool createNormalizedImage)
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapHonNhan(filePath));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapHonNhan(filePath, createNormalizedImage));
                 return JsonConvert.SerializeObject(rs);
             }
             catch (Exception ex)
@@ -592,11 +592,11 @@ namespace AXService.Services.Implementations
         /// <returns>
         /// List<Dictionary<string, InformationField>>
         /// </returns>
-        public async Task<object> ExtractTuPhapA3KhaiSinh_Mau3Recogs(string filePath)
+        public async Task<object> ExtractTuPhapA3KhaiSinh_Mau3Recogs(string filePath, bool createNormalizedImage)
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiSinh_Mau3Recogs(filePath, _RunOCR_On_A3_From_1999));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiSinh_Mau3Recogs(filePath, _RunOCR_On_A3_From_1999, createNormalizedImage));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
@@ -615,11 +615,11 @@ namespace AXService.Services.Implementations
         /// <returns>
         /// List<Dictionary<string, InformationField>>
         /// </returns>
-        public async Task<object> ExtractTuPhapA3KhaiSinh_Mau4Recogs(string filePath)
+        public async Task<object> ExtractTuPhapA3KhaiSinh_Mau4Recogs(string filePath, bool createNormalizedImage)
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiSinh_Mau4Recogs(filePath,_RunOCR_On_A3_From_1999));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiSinh_Mau4Recogs(filePath, _RunOCR_On_A3_From_1999, createNormalizedImage));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
@@ -638,11 +638,11 @@ namespace AXService.Services.Implementations
         /// <returns>
         /// List<Dictionary<string, InformationField>>
         /// </returns>
-        public async Task<object> ExtractTuPhapA3KhaiTu(string filePath)
+        public async Task<object> ExtractTuPhapA3KhaiTu(string filePath, bool createNormalizedImage)
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiTu(filePath, _RunOCR_On_A3_From_1999));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiTu(filePath, _RunOCR_On_A3_From_1999, createNormalizedImage));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
@@ -661,11 +661,11 @@ namespace AXService.Services.Implementations
         /// <returns>
         /// List<Dictionary<string, InformationField>>
         /// </returns>
-        public async Task<object> ExtractTuPhapA3KetHon(string filePath)
+        public async Task<object> ExtractTuPhapA3KetHon(string filePath, bool createNormalizedImage)
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KetHon(filePath, _RunOCR_On_A3_From_1999));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KetHon(filePath, _RunOCR_On_A3_From_1999, createNormalizedImage));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
@@ -677,11 +677,11 @@ namespace AXService.Services.Implementations
             }
         }
 
-        public async Task<object> ExtractTuPhapA3NhanConNuoi(string filePath)
+        public async Task<object> ExtractTuPhapA3NhanConNuoi(string filePath, bool createNormalizedImage)
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3NhanConNuoi(filePath, _RunOCR_On_A3_From_1999));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3NhanConNuoi(filePath, _RunOCR_On_A3_From_1999, createNormalizedImage));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
@@ -693,11 +693,11 @@ namespace AXService.Services.Implementations
             }
         }
 
-        public async Task<object> ExtractTuPhapA3KhaiSinh95(string filePath)
+        public async Task<object> ExtractTuPhapA3KhaiSinh95(string filePath, bool createNormalizedImage)
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiSinh95(filePath,_runOCR_On_A3_Old));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiSinh95(filePath, _runOCR_On_A3_Old, createNormalizedImage));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
@@ -709,11 +709,11 @@ namespace AXService.Services.Implementations
             }
         }
 
-        public async Task<object> ExtractTuPhapA3KhaiSinh97(string filePath)
+        public async Task<object> ExtractTuPhapA3KhaiSinh97(string filePath, bool createNormalizedImage)
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiSinh97(filePath,_runOCR_On_A3_Old));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiSinh97(filePath, _runOCR_On_A3_Old, createNormalizedImage));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
@@ -725,11 +725,11 @@ namespace AXService.Services.Implementations
             }
         }
 
-        public async Task<object> ExtractTuPhapA3KetHon89(string filePath)
+        public async Task<object> ExtractTuPhapA3KetHon89(string filePath, bool createNormalizedImage)
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KetHon89(filePath, _runOCR_On_A3_Old));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KetHon89(filePath, _runOCR_On_A3_Old, createNormalizedImage));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
@@ -740,57 +740,11 @@ namespace AXService.Services.Implementations
                 //return ex.Message;
             }
         }
-        public async Task<object> ExtractTuPhapA3KetHon98(string filePath)
+        public async Task<object> ExtractTuPhapA3KetHon98(string filePath, bool createNormalizedImage)
         {
             try
             {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KetHon98(filePath, _runOCR_On_A3_Old));
-                //return jsonInfo;
-                return JsonConvert.SerializeObject(rs);
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-                //return ex.Message;
-            }
-        }
-
-        public async Task<object> ExtractTuPhapA3KhaiTu95(string filePath)
-        {
-            try
-            {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiTu95(filePath, _runOCR_On_A3_Old));
-                //return jsonInfo;
-                return JsonConvert.SerializeObject(rs);
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-                //return ex.Message;
-            }
-        }
-        public async Task<object> ExtractTuPhapA3KhaiTu96(string filePath)
-        {
-            try
-            {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiTu96(filePath, _runOCR_On_A3_Old));
-                //return jsonInfo;
-                return JsonConvert.SerializeObject(rs);
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-                //return ex.Message;
-            }
-        }
-        public async Task<object> ExtractTuPhapA3KhaiTu98(string filePath)
-        {
-            try
-            {
-                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiTu98(filePath, _runOCR_On_A3_Old));
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KetHon98(filePath, _runOCR_On_A3_Old, createNormalizedImage));
                 //return jsonInfo;
                 return JsonConvert.SerializeObject(rs);
             }
@@ -802,6 +756,52 @@ namespace AXService.Services.Implementations
             }
         }
 
-    
+        public async Task<object> ExtractTuPhapA3KhaiTu95(string filePath, bool createNormalizedImage)
+        {
+            try
+            {
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiTu95(filePath, _runOCR_On_A3_Old, createNormalizedImage));
+                //return jsonInfo;
+                return JsonConvert.SerializeObject(rs);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+                //return ex.Message;
+            }
+        }
+        public async Task<object> ExtractTuPhapA3KhaiTu96(string filePath, bool createNormalizedImage)
+        {
+            try
+            {
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiTu96(filePath, _runOCR_On_A3_Old, createNormalizedImage));
+                //return jsonInfo;
+                return JsonConvert.SerializeObject(rs);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+                //return ex.Message;
+            }
+        }
+        public async Task<object> ExtractTuPhapA3KhaiTu98(string filePath, bool createNormalizedImage)
+        {
+            try
+            {
+                var rs = await Task.FromResult(APIs.FormAPI.ExtractTuPhapA3KhaiTu98(filePath, _runOCR_On_A3_Old, createNormalizedImage));
+                //return jsonInfo;
+                return JsonConvert.SerializeObject(rs);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+                //return ex.Message;
+            }
+        }
+
+
     }
 }
