@@ -61,12 +61,12 @@ namespace AXService.Services.Implementations
                     filePath = await SaveFileOfRequest(request, headerInfo);
                     isCreateStempFile = true;
                 }
-                var funcToCall = GetFuncToCall(endpoint, "", args);
+                var funcToCall = GetFuncToCall(endpoint, "", request.createNormalizedImage, args);
 
                 if (request.field != null)
                 {
                     string tableJson = request.field.ToString();
-                    funcToCall = GetFuncToCall(endpoint, tableJson, args);
+                    funcToCall = GetFuncToCall(endpoint, tableJson, request.createNormalizedImage, args);
                 }
 
                 var result = await GetOcrResult(filePath, headerInfo, funcToCall);
@@ -118,7 +118,7 @@ namespace AXService.Services.Implementations
             return resultOcr;
         }
 
-        private Func<string, Task<object>> GetFuncToCall(string endpoint, string tableJson = "", params string[] args)
+        private Func<string, Task<object>> GetFuncToCall(string endpoint, string tableJson , bool createNormalizedImage, params string[] args)
         {
             switch (endpoint)
             {
@@ -148,47 +148,47 @@ namespace AXService.Services.Implementations
                 case "tunguyen":
                     return async (string path) => await _ocrService.BocTach_TuNguyen(path);
                 case CommonEnum.FunctionToCall.ExtractTuPhapKhaiSinh:
-                    return async (string path) => await _ocrService.ExtractTuPhapKhaiSinh(path);
+                    return async (string path) => await _ocrService.ExtractTuPhapKhaiSinh(path,createNormalizedImage);
                 case CommonEnum.FunctionToCall.ExtractTuPhapKhaiTu:
-                    return async (string path) => await _ocrService.ExtractTuPhapKhaiTu(path);
+                    return async (string path) => await _ocrService.ExtractTuPhapKhaiTu(path, createNormalizedImage);
                 case CommonEnum.FunctionToCall.ExtractTuPhapKetHon:
-                    return async (string path) => await _ocrService.ExtractTuPhapKetHon(path);
+                    return async (string path) => await _ocrService.ExtractTuPhapKetHon(path, createNormalizedImage);
                 case CommonEnum.FunctionToCall.ExtractTuPhapChaMeCon:
-                    return async (string path) => await _ocrService.ExtractTuPhapChaMeCon(path);
+                    return async (string path) => await _ocrService.ExtractTuPhapChaMeCon(path, createNormalizedImage);
                 case CommonEnum.FunctionToCall.ExtractTuPhapCaiChinh:
-                    return async (string path) => await _ocrService.ExtractTuPhapCaiChinh(path);
+                    return async (string path) => await _ocrService.ExtractTuPhapCaiChinh(path, createNormalizedImage);
                 case CommonEnum.FunctionToCall.ExtractTuPhapGiamHo:
-                    return async (string path) => await _ocrService.ExtractTuPhapGiamHo(path);
+                    return async (string path) => await _ocrService.ExtractTuPhapGiamHo(path, createNormalizedImage);
                 case CommonEnum.FunctionToCall.ExtractTuPhapLyHon:
-                    return async (string path) => await _ocrService.ExtractTuPhapLyHon(path);
+                    return async (string path) => await _ocrService.ExtractTuPhapLyHon(path, createNormalizedImage);
                 case CommonEnum.FunctionToCall.ExtractTuPhapNhanConNuoi:
-                    return async (string path) => await _ocrService.ExtractTuPhapNhanConNuoi(path);
+                    return async (string path) => await _ocrService.ExtractTuPhapNhanConNuoi(path, createNormalizedImage);
                 case CommonEnum.FunctionToCall.ExtractTuPhapHonNhan:
-                    return async (string path) => await _ocrService.ExtractTuPhapHonNhan(path);
+                    return async (string path) => await _ocrService.ExtractTuPhapHonNhan(path, createNormalizedImage);
                 case CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiSinh_Mau3Recogs:
-                    return async (string path) => await _ocrService.ExtractTuPhapA3KhaiSinh_Mau3Recogs(path);
+                    return async (string path) => await _ocrService.ExtractTuPhapA3KhaiSinh_Mau3Recogs(path, createNormalizedImage);
                 case CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiSinh_Mau4Recogs:
-                    return async (string path) => await _ocrService.ExtractTuPhapA3KhaiSinh_Mau4Recogs(path);
+                    return async (string path) => await _ocrService.ExtractTuPhapA3KhaiSinh_Mau4Recogs(path, createNormalizedImage);
                 case CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiTu:
-                    return async (string path) => await _ocrService.ExtractTuPhapA3KhaiTu(path);
+                    return async (string path) => await _ocrService.ExtractTuPhapA3KhaiTu(path, createNormalizedImage);
                 case CommonEnum.FunctionToCall.ExtractTuPhapA3KetHon:
-                    return async (string path) => await _ocrService.ExtractTuPhapA3KetHon(path);
+                    return async (string path) => await _ocrService.ExtractTuPhapA3KetHon(path, createNormalizedImage);
                 case CommonEnum.FunctionToCall.ExtractTuPhapA3NhanConNuoi:
-                    return async (string path) => await _ocrService.ExtractTuPhapA3NhanConNuoi(path);
+                    return async (string path) => await _ocrService.ExtractTuPhapA3NhanConNuoi(path, createNormalizedImage);
                 case CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiSinh95:
-                    return async (string path) => await _ocrService.ExtractTuPhapA3KhaiSinh95(path);
+                    return async (string path) => await _ocrService.ExtractTuPhapA3KhaiSinh95(path, createNormalizedImage);
                 case CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiSinh97:
-                    return async (string path) => await _ocrService.ExtractTuPhapA3KhaiSinh97(path);
+                    return async (string path) => await _ocrService.ExtractTuPhapA3KhaiSinh97(path, createNormalizedImage);
                 case CommonEnum.FunctionToCall.ExtractTuPhapA3KetHon89:
-                    return async (string path) => await _ocrService.ExtractTuPhapA3KetHon89(path);
+                    return async (string path) => await _ocrService.ExtractTuPhapA3KetHon89(path, createNormalizedImage);
                 case CommonEnum.FunctionToCall.ExtractTuPhapA3KetHon98:
-                    return async (string path) => await _ocrService.ExtractTuPhapA3KetHon98(path);
+                    return async (string path) => await _ocrService.ExtractTuPhapA3KetHon98(path, createNormalizedImage);
                 case CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiTu95:
-                    return async (string path) => await _ocrService.ExtractTuPhapA3KhaiTu95(path);
+                    return async (string path) => await _ocrService.ExtractTuPhapA3KhaiTu95(path, createNormalizedImage);
                 case CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiTu96:
-                    return async (string path) => await _ocrService.ExtractTuPhapA3KhaiTu96(path);
+                    return async (string path) => await _ocrService.ExtractTuPhapA3KhaiTu96(path, createNormalizedImage);
                 case CommonEnum.FunctionToCall.ExtractTuPhapA3KhaiTu98:
-                    return async (string path) => await _ocrService.ExtractTuPhapA3KhaiTu98(path);
+                    return async (string path) => await _ocrService.ExtractTuPhapA3KhaiTu98(path, createNormalizedImage);
 
                 case CommonEnum.FunctionToCall.SegmentTuPhapA3KetHon:
                     return async (string path) => await _tableSegmentService.Segment_TuPhapA3KetHon(path, 0);

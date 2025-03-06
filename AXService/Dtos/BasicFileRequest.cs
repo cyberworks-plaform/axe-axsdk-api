@@ -36,5 +36,10 @@ namespace AXService.Dtos
         /// Năm của mẫu phiếu cần xử lý
         /// </summary>
         public int year { get;set; } 
+
+        /// <summary>
+        /// Có cần sinh ra file ảnh chuẩn hóa hay không
+        /// </summary>
+        public bool createNormalizedImage { get; set; } = false;   
     }
 }
