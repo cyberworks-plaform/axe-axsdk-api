@@ -29,7 +29,7 @@ namespace AXService.Services.Implementations
         {
             _configuration = configuration;
             _axSvAddress = _configuration["AxConfigs:Address"] ?? "localhost";
-            _axdesModelPath = _configuration["AxConfigs:AxdesModelPath"] ?? $"{Path.Combine(Environment.CurrentDirectory, "\\lib\\ax-des\\model")}";
+            _axdesModelPath = _configuration["AxConfigs:AxdesModelPath"] ?? $"{Path.Combine(Environment.CurrentDirectory, "lib\\ax-des\\model")}";
 
             AxDesApiManager.SetHost(_axSvAddress);
         }
@@ -91,7 +91,7 @@ namespace AXService.Services.Implementations
         /// </summary>
         /// <param name="axdesResult"></param>
         /// <returns></returns>
-        private Dictionary<string, InformationField> ConvertResultToAxSDKFormat(ExtractModels.ExtractResult axdesResult)
+        private Dictionary<string, InformationField> ConvertResultToAxSDKFormat(AxDesApi.ExtractModels.ExtractResult axdesResult)
         {
             var desResult = new Dictionary<string, InformationField>();
             foreach (var item in axdesResult.Result)
