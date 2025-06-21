@@ -336,7 +336,7 @@ namespace AXService.Services.Implementations
         {
             try
             {
-                var rs = await Task.FromResult(APIs.ExtractInfoAPI.ExtractCMNDByDL(filePath));
+                var rs = await Task.FromResult(APIs.ExtractInfoAPI.ExtractCMNDByDL2(filePath));
                 return JsonConvert.SerializeObject(rs);
                 //return rs;
             }
