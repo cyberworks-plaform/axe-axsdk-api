@@ -43,9 +43,8 @@ public class Program
         var result = APIs.FormAPI.ExtractTuPhapKhaiSinh(filePath);
         return result;
     }
-    private static HttpResponseMessage CallAXOverAPIWrapper(string address, string filePath)
+    private static HttpResponseMessage CallAXOverAPIWrapper(string address,string apiEndPoint,  string filePath)
     {
-        var apiEndPoint = "home/ocr/tuphap-khaisinh";
         var requestUri = new Uri(new Uri(address), apiEndPoint);
 
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri);
@@ -82,6 +81,7 @@ public class Program
             }
 
             var apiAddress = _configuration["APIAddress"];
+            var apiEndPoint = _configuration["APIEndPoint"];
             string axServer = string.Empty;
             bool isUsingAPI = string.IsNullOrEmpty(_configuration["IsUseAPI"]) ? false : bool.Parse(_configuration["IsUseAPI"]);
             if (isUsingAPI)
@@ -121,7 +121,7 @@ public class Program
                     object result;
                     if (isUsingAPI)
                     {
-                        result = await Task.Run(() => CallAXOverAPIWrapper(apiAddress, file.FullName));
+                        result = await Task.Run(() => CallAXOverAPIWrapper(apiAddress,apiEndPoint, file.FullName));
                         if (result is HttpResponseMessage httpResponseMessage)
                         {
                             var status = httpResponseMessage.StatusCode;
@@ -208,58 +208,11 @@ public class Program
             Console.WriteLine(ex);
         }
     }
-    public static void TestRateLimit()
-    {
-        var url = "https://localhost:44357/Home/TestRateLimit";
-        int totalRequests = 20;
-        var httpClientHandler = new HttpClientHandler
-        {
-            // Bỏ qua SSL self-signed (nếu dùng localhost dev)
-            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-        };
-
-        var httpClient = new HttpClient(httpClientHandler);
-
-        var tasks = Enumerable.Range(1, totalRequests);
-
-        Console.WriteLine($"Sending {totalRequests} requests to {url}...\n");
-        try
-        {
-
-
-            var response = httpClient.GetAsync(url).Result;
-            var result = response.Content.ReadAsStringAsync();
-            var status = response.IsSuccessStatusCode ? "✅" : "❌";
-            Console.WriteLine($"Initial request status: {status} - {result}\n");
-
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Initial request failed: {ex.Message}");
-            return;
-        }
-        Parallel.ForEachAsync(tasks, new ParallelOptions { MaxDegreeOfParallelism = totalRequests }, async (i, _) =>
-        {
-            try
-            {
-                var response = httpClient.GetAsync(url).Result;
-                var result = await response.Content.ReadAsStringAsync();
-
-                var status = response.IsSuccessStatusCode ? "✅" : "❌";
-                Console.WriteLine($"[{i:00}] {status} Status: {response.StatusCode} - {result}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[{i:00}] ❌ Exception: {ex.Message}");
-            }
-        });
-    }
     public static void Main(string[] args)
     {
         Init(args);
         RunAx();
         //TestAxDes();
-        //TestRateLimit();
     }
 
 
