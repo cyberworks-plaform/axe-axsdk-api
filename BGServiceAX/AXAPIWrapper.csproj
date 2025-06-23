@@ -10,6 +10,8 @@
 		<StartupObject />
 		<UserSecretsId>d5bf6c00-3c4c-4207-9360-d9cc1d20ade8</UserSecretsId>
 		<DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
+		 <Version>2.3.2</Version>
+		 <BuildDate>$([System.DateTime]::Now.ToString("yyyy-MM-dd"))</BuildDate>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -25,22 +27,20 @@
 		<PackageReference Include="Azure.Storage.Queues" Version="12.11.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
 	</ItemGroup>
-<Target Name="RenameAppSettingsOnPublish" AfterTargets="Publish">
-  <Move SourceFiles="$(PublishDir)appsettings.json"
-        DestinationFiles="$(PublishDir)appsettings.publish.json"
-        Condition="Exists('$(PublishDir)appsettings.json')" />
+
+
+	<Target Name="RenameAppSettingsOnPublish" AfterTargets="Publish">
+  <Move SourceFiles="$(PublishDir)appsettings.json" DestinationFiles="$(PublishDir)appsettings.publish.json" Condition="Exists('$(PublishDir)appsettings.json')" />
 
   <!-- Nếu có appsettings.Production.json thì cũng đổi tên -->
-  <Move SourceFiles="$(PublishDir)appsettings.Production.json"
-        DestinationFiles="$(PublishDir)appsettings.publish.Production.json"
-        Condition="Exists('$(PublishDir)appsettings.Production.json')" />
+  <Move SourceFiles="$(PublishDir)appsettings.Production.json" DestinationFiles="$(PublishDir)appsettings.publish.Production.json" Condition="Exists('$(PublishDir)appsettings.Production.json')" />
 </Target>
 
  <Target Name="ZipToPublishedFolder" AfterTargets="Publish">
   <PropertyGroup>
     <TimeStamp>$([System.DateTime]::Now.ToString("yyyyMMddHHmm"))</TimeStamp>
     <AppName>$(AssemblyName)</AppName>
-    <ZipFileName>$(AppName)-update-$(TimeStamp).zip</ZipFileName>
+    <ZipFileName>$(AppName)-v$(Version)-update-$(TimeStamp).zip</ZipFileName>
     <ZipOutputPath>$(PublishUrl)\\$(ZipFileName)</ZipOutputPath>
     <SevenZipExe>C:\Program Files\7-Zip\7z.exe</SevenZipExe>
   </PropertyGroup>
@@ -49,8 +49,7 @@
   <Message Importance="High" Text="⚠️  7-Zip not found at $(SevenZipExe). Skipping zip step." Condition="!Exists('$(SevenZipExe)')" />
 
   <!-- Nén toàn bộ file/folder tại PublishUrl, bỏ qua .zip/.rar, tạo zip NGAY TẠI đó -->
-  <Exec Command="&quot;$(SevenZipExe)&quot; a -tzip &quot;$(ZipOutputPath)&quot; &quot;$(PublishUrl)\\*&quot; -xr!*.zip -xr!*.rar -xr!$(ZipFileName)"
-        Condition="Exists('$(SevenZipExe)')" />
+  <Exec Command="&quot;$(SevenZipExe)&quot; a -tzip &quot;$(ZipOutputPath)&quot; &quot;$(PublishUrl)\\*&quot; -xr!*.zip -xr!*.rar -xr!$(ZipFileName)" Condition="Exists('$(SevenZipExe)')" />
 </Target>
 
 

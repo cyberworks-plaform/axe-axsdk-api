@@ -18,7 +18,7 @@ namespace BGServiceAX
 {
     public static class AppInfo
     {
-        public const string Version = "v2.3.2";
+        public const string Version = "v2.3.2"; //Todo: cần câp biến này đồng bộ với giá trị trong file csproj
         public static string LastUpdated => "2025-06-21";
     }
     public class Startup
