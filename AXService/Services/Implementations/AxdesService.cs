@@ -61,8 +61,9 @@ namespace AXService.Services.Implementations
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"Error calling {nameof(AxDesApi.Extraction.BocTachTheoMoHinhAsync)}  with model: {modelName} ");
-                throw;
+                var newEx = new Exception($"Error calling {nameof(AxDesApi.Extraction.BocTachTheoMoHinhAsync)} with model: {modelName} and file: {filePath}", ex);
+                Log.Error(newEx, newEx.Message);
+                throw newEx;
             }
         }
 
