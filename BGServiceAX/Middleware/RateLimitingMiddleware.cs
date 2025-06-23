@@ -90,7 +90,7 @@ public class RateLimitingMiddleware
             {
                 WriteIndented = true
             });
-
+            Log.Error($"Rate limit exceeded: {json} for path: {context.Request.Path} from IP: {clientIp}");
             await context.Response.WriteAsync(json);
             return;
         }

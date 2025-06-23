@@ -16,6 +16,11 @@ using System;
 
 namespace BGServiceAX
 {
+    public static class AppInfo
+    {
+        public const string Version = "v2.3.2";
+        public static string LastUpdated => "2025-06-21";
+    }
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -46,8 +51,8 @@ namespace BGServiceAX
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = $"AXSDK OpenAPI",
-                    Version = "v2.3.1",
-                    Description = $"Last update: 2025-21-06",
+                    Version = AppInfo.Version,
+                    Description = $"Last update: {AppInfo.LastUpdated} - {AppInfo.Version}",
                     Contact = new OpenApiContact
                     {
                         Name = "Huy Dinh",
