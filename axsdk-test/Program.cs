@@ -12,7 +12,10 @@ using System.Text;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 using AxDesApi;
-
+using System.Linq;
+using System.Threading.Tasks;
+using Serilog;
+using Serilog.Sinks.SystemConsole.Themes;
 
 
 public class Program
@@ -30,15 +33,18 @@ public class Program
 
         _httpClient = new HttpClient();
 
+        Log.Logger = new LoggerConfiguration()
+                  .ReadFrom.Configuration(_configuration)
+                  .CreateLogger();
+
     }
     private static object CallAXDirect(string filePath)
     {
         var result = APIs.FormAPI.ExtractTuPhapKhaiSinh(filePath);
         return result;
     }
-    private static object CallAXOverAPIWrapper(string address, string filePath)
+    private static HttpResponseMessage CallAXOverAPIWrapper(string address,string apiEndPoint,  string filePath)
     {
-        var apiEndPoint = "home/ocr/tuphap-khaisinh";
         var requestUri = new Uri(new Uri(address), apiEndPoint);
 
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri);
@@ -49,7 +55,7 @@ public class Program
         requestMessage.Content = new StringContent(httpContentStr, Encoding.UTF8, "application/json");
 
         var response = _httpClient.SendAsync(requestMessage).Result;
-        return response.Content;
+        return response;
     }
     private static bool CheckAPIAddress(string address)
     {
@@ -67,102 +73,115 @@ public class Program
             var dataFolder = _configuration["DataFolder:Path"];
             var dataFolder_Filter = _configuration["DataFolder:Filter"];
             var numOfFileSimulation = long.Parse(_configuration["NumOfFileSimulation"]);
-           
+            var maxConcurrency = int.Parse(_configuration["MaxConcurrency"] ?? "5"); // Thêm tham số trong appsettings nếu muốn
+
             if (string.IsNullOrEmpty(dataFolder_Filter))
             {
                 dataFolder_Filter = "*.*";
             }
 
             var apiAddress = _configuration["APIAddress"];
-            string axServer=string.Empty;
+            var apiEndPoint = _configuration["APIEndPoint"];
+            string axServer = string.Empty;
             bool isUsingAPI = string.IsNullOrEmpty(_configuration["IsUseAPI"]) ? false : bool.Parse(_configuration["IsUseAPI"]);
             if (isUsingAPI)
             {
                 axServer = apiAddress;
-                Console.Write($"Connecting API at address: {apiAddress}... ");
+                Log.Information($"Connecting API at address: {apiAddress}... ");
                 var checkconnect = CheckAPIAddress(apiAddress);
-                Console.WriteLine($"Connected!");
+                Log.Information($"Connected!");
+                Log.Information($"This test program is using API at address: {apiAddress} with endpoint: {apiEndPoint} for processing files.");
             }
             else
             {
-                axServer=axsdk_address;
-                Console.Write($"Connecting AX at address: {axsdk_address}... ");
+                axServer = axsdk_address;
+                Log.Information($"Connecting AX at address: {axsdk_address}... ");
                 APIs.SetServerAddress(axsdk_address);
                 var checkLicnese = APIs.CheckLicense();
-                Console.WriteLine($"Connected! CheckLicense status: {checkLicnese}");
+                Log.Information($"Connected! CheckLicense status: {checkLicnese}");
             }
+
             var directoryInfo = new DirectoryInfo(dataFolder);
-            
-            var totalFile = directoryInfo.GetFiles(dataFolder_Filter, SearchOption.AllDirectories).Length;
-            if (numOfFileSimulation < totalFile)
-            {
-                numOfFileSimulation = totalFile;
-            }
-            Console.WriteLine($"Total file: {totalFile} in {dataFolder}");
-            Console.WriteLine($"Number of file simulation: {numOfFileSimulation}");
-            Console.WriteLine("--------------------------------------------");
-            var sw = new Stopwatch();
-            long totalTime = 0;
-            var fileIndx = 0;
-            var isStop = false;
-            var isOCRSuccess = false;
-            while (!isStop)
-            {
-                foreach (var file in directoryInfo.GetFiles(dataFolder_Filter, SearchOption.AllDirectories))
-                {
+            var allFiles = directoryInfo.GetFiles(dataFolder_Filter, SearchOption.AllDirectories).Take((int)numOfFileSimulation).ToList();
 
-                    try
+            Log.Information($"Total file to process: {allFiles.Count} in {dataFolder}");
+            Log.Information("--------------------------------------------");
+
+            var totalTime = 0L;
+            var totalSuccess = 0;
+            var lockObj = new object();
+
+            Parallel.ForEachAsync(allFiles, new ParallelOptions { MaxDegreeOfParallelism = maxConcurrency }, async (file, _) =>
+            {
+                var sw = Stopwatch.StartNew();
+                bool isSuccess = false;
+                string message = string.Empty;
+                try
+                {
+                    Log.Information($"--> [{DateTime.Now:HH:mm:ss}] Start ocr: {file.Name}");
+                    object result;
+                    if (isUsingAPI)
                     {
-                        sw.Restart();
-                        
-                        fileIndx++;
-                        Console.WriteLine($"--> \t[{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] \tStart ocr file \t{file.Name} \tServer: \t{axServer} \tFile \t{fileIndx}/{numOfFileSimulation}");
-                        object result;
-                        if (isUsingAPI)
+                        result = await Task.Run(() => CallAXOverAPIWrapper(apiAddress,apiEndPoint, file.FullName));
+                        if (result is HttpResponseMessage httpResponseMessage)
                         {
-                            result = CallAXOverAPIWrapper(apiAddress, file.FullName);
+                            var status = httpResponseMessage.StatusCode;
+                            message = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                            if (status != HttpStatusCode.OK)
+                            {
+
+                                isSuccess = false;
+                            }
+                            else
+                            {
+                                isSuccess = true;
+                            }
+
                         }
-                        else
-                        {
-                            result = CallAXDirect(file.FullName);
-                        }
-                        isOCRSuccess = true;
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        isOCRSuccess = false;
-                        Console.WriteLine(ex.ToString());
+                        result = await Task.Run(() => CallAXDirect(file.FullName));
+
                     }
-                    finally
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, $"ERROR processing {file.Name}: {ex.Message}");
+                }
+                finally
+                {
+                    sw.Stop();
+                    lock (lockObj)
                     {
-                        sw.Stop();
                         totalTime += sw.ElapsedMilliseconds;
-                        Console.WriteLine($"--> \t[{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] \tEnd ocr file \t{file.Name} \tSuccess: {isOCRSuccess} \tDuration: \t{sw.ElapsedMilliseconds} ms");
-                        
+                        if (isSuccess) totalSuccess++;
                     }
+                    string decorateMesssage = string.Empty;
+                    string msg = $"--> [{DateTime.Now:HH:mm:ss}] End ocr: {file.Name} - Message: {message} - Success: {isSuccess} - Duration: {sw.ElapsedMilliseconds} ms";
+                    if (isSuccess)
+                    {
+                        Log.Information(msg);
+                    }
+                    else
+                    {
+                        Log.Warning(msg);
+                    }
+
                 }
-                if (fileIndx >= numOfFileSimulation)
-                {
-                    isStop = true;
-                }
+            }).Wait();
 
-                Console.WriteLine("--------------------------------------------");
-                var totalSecond = totalTime / 1000;
-                var everageTime = totalTime / fileIndx;
-                Console.WriteLine($"Process total file {fileIndx} in {totalSecond} s - Everage: {everageTime} ms");
-                Console.WriteLine("--------------------------------------------");
-
-            }
-
-            Console.WriteLine("Done");
-
+            Log.Information("--------------------------------------------");
+            var avgTime = totalSuccess > 0 ? totalTime / totalSuccess : 0;
+            Log.Information($"Processed {totalSuccess}/{allFiles.Count} files - Total time: {totalTime / 1000}s - Avg: {avgTime} ms/file");
+            Log.Information("Done.");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Exception occurred: {ex.Message} ");
-            Console.WriteLine(ex.StackTrace);
+            Log.Error(ex, $"Exception occurred: {ex.Message} ");
         }
     }
+
 
     public static void TestAxDes()
     {
@@ -183,7 +202,7 @@ public class Program
             var result = AxDesApi.Extraction.BocTachTheoMoHinh(modelFolder, filePath, string.Empty, isKeyByNameField: true);
             sw.Stop();
             Console.WriteLine($"End calling  BocTachTheoMoHinh() \t Duration: {sw.ElapsedMilliseconds} ms \t Result below:");
-            Console.WriteLine(JsonConvert.SerializeObject(result,Formatting.Indented));
+            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
         }
         catch (Exception ex)
         {

@@ -53,7 +53,8 @@ namespace AXService.Services.Implementations
 
                 var sw = new Stopwatch();
                 sw.Start();
-                Log.Warning($"Start handle request : {requestId} - Request.FileId= {request.fileId} - Request EndPoint: {endpoint} ");
+                var logArgs = args != null ? string.Join(",", args) : "None";
+                Log.Warning($"Start handle request : {requestId} - Request.FileId= {request.fileId} - Request EndPoint: {endpoint} - Request Args: {logArgs} ");
                 var filePath = request.filePath;
                 var isCreateStempFile = false;
                 if (string.IsNullOrEmpty(filePath))

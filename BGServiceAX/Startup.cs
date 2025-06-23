@@ -1,4 +1,5 @@
-﻿using AXService.Config;
+﻿using AXAPIWrapper.Middleware;
+using AXService.Config;
 using AXService.Services.Implementations;
 using AXService.Services.Interfaces;
 using Azure.Storage.Blobs;
@@ -15,6 +16,11 @@ using System;
 
 namespace BGServiceAX
 {
+    public static class AppInfo
+    {
+        public const string Version = "v2.3.2"; //Todo: cần câp biến này đồng bộ với giá trị trong file csproj
+        public static string LastUpdated => "2025-06-21";
+    }
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -45,8 +51,8 @@ namespace BGServiceAX
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = $"AXSDK OpenAPI",
-                    Version = "v1",
-                    Description = $"Last update: 2024-06-13",
+                    Version = AppInfo.Version,
+                    Description = $"Last update: {AppInfo.LastUpdated} - {AppInfo.Version}",
                     Contact = new OpenApiContact
                     {
                         Name = "Huy Dinh",
@@ -77,11 +83,12 @@ namespace BGServiceAX
                 });
 
             });
+            services.Configure<RateLimitOptions>(Configuration.GetSection("RateLimitOptions"));
 
-    //        services.AddAuthentication("BasicAuthentication")
-    //.AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+            //        services.AddAuthentication("BasicAuthentication")
+            //.AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
 
-            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -91,13 +98,14 @@ namespace BGServiceAX
             {
                 app.UseDeveloperExceptionPage();
             }
-
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
             app.UseAuthentication();
             //app.UseAuthorization();
+            
+            app.UseMiddleware<RateLimitingMiddleware>();
 
             app.UseSwagger();
             app.UseSwaggerUI(s =>

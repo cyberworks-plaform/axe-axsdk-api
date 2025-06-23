@@ -1036,7 +1036,20 @@ namespace BGServiceAX.Controllers
             return Ok("pong");
         }
 
-       
+        /// <summary>
+        /// Hàm này dùng để test tính năng Rate Limiting của API.
+        /// Hàm này sẽ đợi ngâu nhiên từ 0 đến 5 giây trước khi trả về kết quả là: "Hello from TestRateLimit"
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("[Action]")]
+        public async Task<IActionResult> TestRateLimit()
+        {
+            await Task.Delay(new Random().Next(5000));
+            return Ok($"Hello from TestRateLimit");
+        }
+
+
 
         private void AppendResponse(HeaderRequestInfo info)
         {
