@@ -90,6 +90,7 @@ public class Program
                 Log.Information($"Connecting API at address: {apiAddress}... ");
                 var checkconnect = CheckAPIAddress(apiAddress);
                 Log.Information($"Connected!");
+                Log.Information($"This test program is using API at address: {apiAddress} with endpoint: {apiEndPoint} for processing files.");
             }
             else
             {
