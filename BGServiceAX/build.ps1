@@ -22,7 +22,7 @@ try {
 } catch {
     $gitHash = "nogit"
 }
-$IsWindows = [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform(
+$IsWinPlatform = [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform(
     [System.Runtime.InteropServices.OSPlatform]::Windows
 )
 
@@ -31,14 +31,14 @@ Write-Host "📌 Framework: $framework"
 Write-Host "📌 Timestamp: $timestamp"
 Write-Host "📌 Git Commit: $gitHash"
 Write-Host "📁 Publish Output: $publishDir"
-Write-Host "📌 Is-WindowOS: $IsWindows"
+Write-Host "📌 Is-WindowOS: $IsWinPlatform"
 
 # Prepare ZIP info
 $zipFileName = "$appName-v$version-update-$timestamp-g$gitHash.zip"
 $zipPath = Join-Path $publishDir $zipFileName
 
 # Determine 7-Zip path
-if ($IsWindows) {
+if ($IsWinPlatform) {
     $sevenZip = "C:/Program Files/7-Zip/7z.exe"
 } else {
     $sevenZip = "7z"  # assumes p7zip-full installed on Linux
@@ -91,7 +91,7 @@ if (-not (Get-Command $sevenZip -ErrorAction SilentlyContinue)) {
 }
 
 # Optionally copy ZIP to local target folder (only on Windows)
-if ($IsWindows) {
+if ($IsWinPlatform) {
     $targetFolder = "D:/cw_publish/AXSDK-API"
     
     if (-not (Test-Path $targetFolder)) {
