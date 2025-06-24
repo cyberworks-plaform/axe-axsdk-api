@@ -25,7 +25,7 @@ jobs:
 
       - name: 🚀 Run PowerShell build script
         shell: pwsh
-        run: ./BGServiceAX/build.ps1
+        run: ./build.ps1
         working-directory: ./BGServiceAX
         
       - name: 📦 Upload ZIP as build artifact
