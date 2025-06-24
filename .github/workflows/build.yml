@@ -1,5 +1,8 @@
 ﻿name: Build & Publish .NET App
 
+env:
+  BUILD_DIR: ./BGServiceAX
+
 on:
   push:
     branches: [ master ]
