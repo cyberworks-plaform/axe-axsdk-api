@@ -9,33 +9,25 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest  # You can switch to windows-latest if needed
+    runs-on: ubuntu-latest
 
     steps:
       - name: 📥 Checkout source code
         uses: actions/checkout@v4
 
-      - name: ⚙️ Setup .NET SDK
+      - name: ⚙️ Setup .NET SDK 6
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '3.1' # or '3.1.x' / '8.0.x' as required by your project
-
-      - name: 🔧 Install libssl1.1 for .NET Core 3.1
-        run: |
-            sudo apt-get update
-            sudo apt-get install -y libssl1.1 || echo "libssl1.1 not available"
-
-      - name: Install OpenSSL dependencies
-        run: sudo apt-get update && sudo apt-get install -y libssl-dev
+          dotnet-version: '6.0.x'
 
       - name: 🧰 Install 7-Zip CLI (Linux)
-        run: sudo apt update && sudo apt install -y p7zip-full
+        run: sudo apt-get update && sudo apt-get install -y p7zip-full
 
       - name: 🚀 Run PowerShell build script
         shell: pwsh
         run: ./build.ps1
         working-directory: ./BGServiceAX
-        
+
       - name: 📦 Upload ZIP as build artifact
         uses: actions/upload-artifact@v4
         with:
