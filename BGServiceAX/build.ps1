@@ -1,98 +1,109 @@
 ﻿# build.ps1
 
-$projectFile = "AXAPIWrapper.csproj"
+$projectFile = "./AXAPIWrapper.csproj"
 $configuration = "Release"
-$publishDir = "D:\cw_publish\AXSDK-API"
-$sevenZipExe = "C:\Program Files\7-Zip\7z.exe"
+$publishDir = "./publish"
+$timestamp = Get-Date -Format "yyyyMMddHHmm"
 
+# Read project info
 Write-Host "📦 Reading project info from $projectFile..."
 
 [xml]$csprojXml = Get-Content $projectFile
-
 $version = $csprojXml.Project.PropertyGroup.Version.Trim()
 $framework = $csprojXml.Project.PropertyGroup.TargetFramework.Trim()
 
-# Safe fallback for missing <AssemblyName>
 $appNameNode = $csprojXml.Project.PropertyGroup.AssemblyName
 $appName = if ($appNameNode) { $appNameNode.Trim() } else { [System.IO.Path]::GetFileNameWithoutExtension($projectFile) }
 
-if (-not $version) {
-    Write-Error "❌ <Version> not found in $projectFile"
-    exit 1
-}
-if (-not $framework) {
-    Write-Error "❌ <TargetFramework> not found in $projectFile"
-    exit 1
-}
-
-# Get time and git hash
-$timestamp = Get-Date -Format "yyyyMMddHHmm"
+# Get Git commit hash if available
 try {
-    $gitHash = (git rev-parse --short HEAD) -replace "`n",""
+    $gitHash = (git rev-parse --short HEAD).Trim()
     if (-not $gitHash) { $gitHash = "nogit" }
 } catch {
     $gitHash = "nogit"
 }
-Write-Host "📅 AppName: $appName"
+$IsWindows = [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform(
+    [System.Runtime.InteropServices.OSPlatform]::Windows
+)
+
 Write-Host "📌 Version: $version"
 Write-Host "📌 Framework: $framework"
 Write-Host "📌 Timestamp: $timestamp"
 Write-Host "📌 Git Commit: $gitHash"
 Write-Host "📁 Publish Output: $publishDir"
+Write-Host "📌 Is-WindowOS: $IsWindows"
 
-# Ensure publish directory exists
-if (-not (Test-Path $publishDir)) {
-    Write-Host "📂 Creating publish directory..."
-    New-Item -Path $publishDir -ItemType Directory | Out-Null
+# Prepare ZIP info
+$zipFileName = "$appName-v$version-update-$timestamp-g$gitHash.zip"
+$zipPath = Join-Path $publishDir $zipFileName
+
+# Determine 7-Zip path
+if ($IsWindows) {
+    $sevenZip = "C:/Program Files/7-Zip/7z.exe"
+} else {
+    $sevenZip = "7z"  # assumes p7zip-full installed on Linux
 }
 
-# Clean, Build, Publish
-Write-Host "`n🧹 Cleaning..."
+# Clean & Build
+Write-Host "`n🧹 Cleaning project..."
 dotnet clean $projectFile
 
-Write-Host "`n🔨 Building..."
+Write-Host "`n🔨 Building project..."
 dotnet build $projectFile -c $configuration
 
-Write-Host "`n🚀 Publishing..."
+Write-Host "`n🚀 Publishing project..."
 dotnet publish $projectFile -c $configuration -o $publishDir
 
-# Rename appsettings.json → appsettings.publish.json
+# Rename config for safety
 $appsettingsPath = Join-Path $publishDir "appsettings.json"
 $appsettingsRenamed = Join-Path $publishDir "appsettings.publish.json"
-
 if (Test-Path $appsettingsPath) {
     Write-Host "🔐 Renaming appsettings.json → appsettings.publish.json"
-    Move-Item -Path $appsettingsPath -Destination $appsettingsRenamed -Force
+    Move-Item $appsettingsPath $appsettingsRenamed -Force
 } else {
-    Write-Warning "⚠️ appsettings.json not found. Skipping rename."
+    Write-Warning "⚠️ appsettings.json not found"
 }
 
 # ZIP using 7-Zip
-$zipFileName = "$appName-v$version-update-$timestamp-$gitHash.zip"
-$zipPath = Join-Path $publishDir $zipFileName
+Write-Host "`n📦 Creating ZIP file: $zipPath"
 
-Write-Host "`n📦 Creating ZIP with 7-Zip: $zipPath"
-
-if (-not (Test-Path $sevenZipExe)) {
-    Write-Warning "⚠️  7-Zip not found at '$sevenZipExe'. Skipping ZIP step."
+if (-not (Get-Command $sevenZip -ErrorAction SilentlyContinue)) {
+    Write-Warning "⚠️  7-Zip not found: $sevenZip. Skipping zip step."
 } else {
-    $arguments = @(
+    $args = @(
         'a',
         '-tzip',
-        "`"$zipPath`"",
-        "`"$publishDir\*`"",
+        $zipPath,
+        "$publishDir/*",
         '-xr!*.zip',
         '-xr!*.rar',
         "-xr!$zipFileName"
     )
 
-    Write-Host "▶️ Running 7-Zip..."
-    Start-Process -FilePath $sevenZipExe -ArgumentList $arguments -Wait -NoNewWindow
+    Write-Host "▶️ Running: $sevenZip $($args -join ' ')"
+    Start-Process -FilePath $sevenZip -ArgumentList $args -Wait -NoNewWindow
 
     if (Test-Path $zipPath) {
-        Write-Host "✅ ZIP file created: $zipPath"
+        Write-Host "✅ ZIP created: $zipPath"
     } else {
-        Write-Warning "❌ ZIP file was not created."
+        Write-Warning "❌ ZIP was not created."
     }
 }
 
+# Optionally copy ZIP to local target folder (only on Windows)
+if ($IsWindows) {
+    $targetFolder = "D:/cw_publish/AXSDK-API"
+    
+    if (-not (Test-Path $targetFolder)) {
+        Write-Host "📂 Creating target folder: $targetFolder"
+        New-Item -Path $targetFolder -ItemType Directory | Out-Null
+    }
+
+    if (Test-Path $zipPath) {
+        $targetZipPath = Join-Path $targetFolder (Split-Path $zipPath -Leaf)
+        Copy-Item $zipPath -Destination $targetZipPath -Force
+        Write-Host "📥 Copied ZIP to: $targetZipPath"
+    } else {
+        Write-Warning "⚠️ ZIP file not found, cannot copy to local target folder."
+    }
+}
