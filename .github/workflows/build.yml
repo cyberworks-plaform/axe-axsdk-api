@@ -20,9 +20,6 @@ jobs:
         with:
           dotnet-version: '3.1' # or '3.1.x' / '8.0.x' as required by your project
 
-      - name: ⚙️ Install PowerShell Core
-        uses: PowerShell/PowerShell@v1.2.3
-
       - name: 🧰 Install 7-Zip CLI (Linux)
         run: sudo apt update && sudo apt install -y p7zip-full
 
