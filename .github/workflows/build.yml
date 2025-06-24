@@ -31,7 +31,15 @@ jobs:
         run: ./build.ps1
         working-directory: ${{ env.BUILD_DIR }}
 
-      - name: 📦 Upload artifact
+      - name: 📌 Get zip file name
+        id: get_zip_name
+        run: |
+            ZIP_FILE=$(find ./BGServiceAX/publish -name '*.zip' | head -n 1)
+            echo "zip_path=$ZIP_FILE" >> $GITHUB_OUTPUT
+            echo "zip_name=$(basename $ZIP_FILE)" >> $GITHUB_OUTPUT
+
+      - name: 📦 Upload ZIP as build artifact
         uses: actions/upload-artifact@v4
         with:
-          path: ${{ env.BUILD_DIR }}/publish/*.zip
+          name: ${{ steps.get_zip_name.outputs.zip_name }}
+          path: ${{ steps.get_zip_name.outputs.zip_path }}
