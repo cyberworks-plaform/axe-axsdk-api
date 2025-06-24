@@ -28,32 +28,4 @@
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
 	</ItemGroup>
 
-
-	<Target Name="RenameAppSettingsOnPublish" AfterTargets="Publish">
-  <Move SourceFiles="$(PublishDir)appsettings.json" DestinationFiles="$(PublishDir)appsettings.publish.json" Condition="Exists('$(PublishDir)appsettings.json')" />
-
-  <!-- Nếu có appsettings.Production.json thì cũng đổi tên -->
-  <Move SourceFiles="$(PublishDir)appsettings.Production.json" DestinationFiles="$(PublishDir)appsettings.publish.Production.json" Condition="Exists('$(PublishDir)appsettings.Production.json')" />
-</Target>
-
- <Target Name="ZipToPublishedFolder" AfterTargets="Publish">
-  <PropertyGroup>
-    <TimeStamp>$([System.DateTime]::Now.ToString("yyyyMMddHHmm"))</TimeStamp>
-    <AppName>$(AssemblyName)</AppName>
-    <ZipFileName>$(AppName)-v$(Version)-update-$(TimeStamp).zip</ZipFileName>
-    <ZipOutputPath>$(PublishUrl)\\$(ZipFileName)</ZipOutputPath>
-    <SevenZipExe>C:\Program Files\7-Zip\7z.exe</SevenZipExe>
-  </PropertyGroup>
-
-  <!-- Cảnh báo nếu 7-Zip không tồn tại -->
-  <Message Importance="High" Text="⚠️  7-Zip not found at $(SevenZipExe). Skipping zip step." Condition="!Exists('$(SevenZipExe)')" />
-
-  <!-- Nén toàn bộ file/folder tại PublishUrl, bỏ qua .zip/.rar, tạo zip NGAY TẠI đó -->
-  <Exec Command="&quot;$(SevenZipExe)&quot; a -tzip &quot;$(ZipOutputPath)&quot; &quot;$(PublishUrl)\\*&quot; -xr!*.zip -xr!*.rar -xr!$(ZipFileName)" Condition="Exists('$(SevenZipExe)')" />
-</Target>
-
-
-
-
-
 </Project>
