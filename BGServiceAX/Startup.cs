@@ -13,13 +13,18 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using System;
+using System.Reflection;
 
 namespace BGServiceAX
 {
+
+
     public static class AppInfo
     {
-        public const string Version = "v2.3.2"; //Todo: cần câp biến này đồng bộ với giá trị trong file csproj
-        public static string LastUpdated => "2025-06-21";
+        public static string Version =>
+            Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "vUNKNOWN";
+
+        public static string LastUpdated => "2025-06-24";
     }
     public class Startup
     {
@@ -104,7 +109,7 @@ namespace BGServiceAX
 
             app.UseAuthentication();
             //app.UseAuthorization();
-            
+
             app.UseMiddleware<RateLimitingMiddleware>();
 
             app.UseSwagger();

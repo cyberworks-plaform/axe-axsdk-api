@@ -49,7 +49,14 @@ Write-Host "`n🧹 Cleaning project..."
 dotnet clean $projectFile
 
 Write-Host "`n🔨 Building project..."
-dotnet build $projectFile -c $configuration
+dotnet build $projectFile -c $configuration 
+
+# Reset thư mục publish để tránh lồng nhau
+if (Test-Path $publishDir) {
+    Write-Host "🧹 Cleaning old publish directory: $publishDir"
+    Remove-Item -Recurse -Force $publishDir
+}
+New-Item -ItemType Directory -Path $publishDir | Out-Null
 
 Write-Host "`n🚀 Publishing project..."
 dotnet publish $projectFile -c $configuration -o $publishDir
