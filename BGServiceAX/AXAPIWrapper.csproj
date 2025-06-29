@@ -10,7 +10,7 @@
 		<StartupObject />
 		<UserSecretsId>d5bf6c00-3c4c-4207-9360-d9cc1d20ade8</UserSecretsId>
 		<DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
-		 <Version>2.3.3</Version>
+		 <Version>2.3.4</Version>
 		 <BuildDate>$([System.DateTime]::Now.ToString("yyyy-MM-dd"))</BuildDate>
 	</PropertyGroup>
 

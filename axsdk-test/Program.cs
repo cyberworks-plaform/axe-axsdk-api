@@ -16,6 +16,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
+using System.Diagnostics.Eventing.Reader;
 
 
 public class Program
@@ -43,8 +44,10 @@ public class Program
         var result = APIs.FormAPI.ExtractTuPhapKhaiSinh(filePath);
         return result;
     }
-    private static HttpResponseMessage CallAXOverAPIWrapper(string address,string apiEndPoint,  string filePath)
+    private static HttpResponseMessage CallAXOverAPIWrapper(string address, string apiEndPoint, string filePath)
     {
+        try
+        { 
         var requestUri = new Uri(new Uri(address), apiEndPoint);
 
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri);
@@ -56,9 +59,16 @@ public class Program
 
         var response = _httpClient.SendAsync(requestMessage).Result;
         return response;
+        }
+        catch(Exception ex)
+        {
+            Log.Error(ex,$"Error calling API at {address} with endpoint {apiEndPoint} for file {filePath}");
+            return new HttpResponseMessage(HttpStatusCode.InternalServerError);
+        }
     }
     private static bool CheckAPIAddress(string address)
     {
+
         var request = new HttpRequestMessage(HttpMethod.Get, address);
         var response = _httpClient.SendAsync(request).Result;
         return response.IsSuccessStatusCode;
@@ -89,8 +99,16 @@ public class Program
                 axServer = apiAddress;
                 Log.Information($"Connecting API at address: {apiAddress}... ");
                 var checkconnect = CheckAPIAddress(apiAddress);
-                Log.Information($"Connected!");
-                Log.Information($"This test program is using API at address: {apiAddress} with endpoint: {apiEndPoint} for processing files.");
+                if (checkconnect)
+                {
+                    Log.Information($"Connected!");
+                    Log.Information($"This test program is using API at address: {apiAddress} with endpoint: {apiEndPoint} for processing files.");
+
+                }
+                else { 
+                    Log.Error($"Cannot connect to API at address: {apiAddress}. Please check the address and try again.");
+                    return;
+                }
             }
             else
             {

@@ -53,10 +53,22 @@ namespace AXService.Services.Implementations
                 {
                     throw new FileNotFoundException($"File model is not exist: {modelPath}");
                 }
+                Log.Debug("Start calling AxDES API for extraction with model: {ModelName} and file: {FilePath}", modelName, filePath);
+                
                 var axdesResponse = await AxDesApi.Extraction.BocTachTheoMoHinhAsync(modelPath, filePath, string.Empty, isKeyByNameField: true);
-
-                var res = ConvertResultToAxSDKFormat(axdesResponse.FirstOrDefault());
-
+                
+                Log.Debug($"AxDES response for model: {modelName} and file: {filePath} is: {JsonConvert.SerializeObject(axdesResponse)}");
+                
+                var res = new Dictionary<string, InformationField>();
+                
+                if (axdesResponse == null || !axdesResponse.Any())
+                {
+                    Log.Warning($"No result returned from AxDES for model: {modelName} and file: {filePath}");
+                }
+                else
+                {
+                    res = ConvertResultToAxSDKFormat(axdesResponse.FirstOrDefault());
+                }
                 return JsonConvert.SerializeObject(res);
             }
             catch (Exception ex)
