@@ -70,6 +70,7 @@ namespace AXService.Enums
         public struct FunctionToCallAxDES
         {
             public const string FormExtractByModelName = "FormExtractByModelName";
+            public const string FormExtractByModelNameWithRawResult = "FormExtractByModelNameWithRawResult";
         }
     }
 }

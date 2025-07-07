@@ -11,6 +11,7 @@ using Newtonsoft;
 using Newtonsoft.Json;
 using AX.AXSDK;
 using System.Linq;
+using System.Diagnostics;
 namespace AXService.Services.Implementations
 {
     /// <summary>
@@ -34,7 +35,14 @@ namespace AXService.Services.Implementations
             AxDesApiManager.SetHost(_axSvAddress);
         }
 
-        public async Task<object> FormExtractByModelName(string filePath, string modelName)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="modelName"></param>
+        /// <param name="isUsingRawAxdesResult"></param>
+        /// <returns></returns>
+        public async Task<object> FormExtractByModelName(string filePath, string modelName,bool isUseAxdesRawResult = false)
         {
             try
             {
@@ -53,31 +61,47 @@ namespace AXService.Services.Implementations
                 {
                     throw new FileNotFoundException($"File model is not exist: {modelPath}");
                 }
+                var sw = new Stopwatch();
+                sw.Start();
                 Log.Debug("Start calling AxDES API for extraction with model: {ModelName} and file: {FilePath}", modelName, filePath);
                 
                 var axdesResponse = await AxDesApi.Extraction.BocTachTheoMoHinhAsync(modelPath, filePath, string.Empty, isKeyByNameField: true);
+
+                sw.Stop();
+                Log.Debug($"AxDES response in {sw.ElapsedMilliseconds} ms for model: {modelName} and file: {filePath} is: {JsonConvert.SerializeObject(axdesResponse)}");
                 
-                Log.Debug($"AxDES response for model: {modelName} and file: {filePath} is: {JsonConvert.SerializeObject(axdesResponse)}");
-                
-                var res = new Dictionary<string, InformationField>();
-                
+                var returnResult = "{}";
+
                 if (axdesResponse == null || !axdesResponse.Any())
                 {
                     Log.Warning($"No result returned from AxDES for model: {modelName} and file: {filePath}");
                 }
                 else
                 {
-                    res = ConvertResultToAxSDKFormat(axdesResponse.FirstOrDefault());
+                    if (isUseAxdesRawResult)
+                    {
+                        returnResult = JsonConvert.SerializeObject(axdesResponse);
+                    }
+                    else
+                    {
+                        var res = new Dictionary<string, InformationField>();
+                        res = ConvertResultToAxSDKFormat(axdesResponse.FirstOrDefault());
+                        returnResult = JsonConvert.SerializeObject(res);
+                    }
                 }
-                return JsonConvert.SerializeObject(res);
+
+             
+                return returnResult;
             }
             catch (Exception ex)
             {
-                var newEx = new Exception($"Error calling {nameof(AxDesApi.Extraction.BocTachTheoMoHinhAsync)} with model: {modelName} and file: {filePath}", ex);
+                var newEx = new Exception($"Error calling {nameof(AxDesApi.Extraction.BocTachTheoMoHinhAsync)} with model: {modelName} and file: {filePath}. Error message: {ex.Message}", ex);
                 Log.Error(newEx, newEx.Message);
                 throw newEx;
             }
         }
+
+
 
         public async Task<List<string>> GetListModelName()
         {

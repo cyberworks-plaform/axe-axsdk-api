@@ -7,7 +7,7 @@ namespace AXService.Services.Interfaces
 {
     public interface IAxdesService
     {
-        Task<object> FormExtractByModelName(string filePath, string modelName);
+        Task<object> FormExtractByModelName(string filePath, string modelName,bool isUseAxdesRawResult);
         Task<List<string>> GetListModelName();
         Task<string> GetRooPathOfModel();
     }

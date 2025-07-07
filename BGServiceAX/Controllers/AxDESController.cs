@@ -40,7 +40,7 @@ namespace AXAPIWrapper.Controllers
         [Route("RootPathOfModel")]
         public async Task<IActionResult> RootPathOfModel()
         {
-            return Ok( await _axdesService.GetRooPathOfModel());
+            return Ok(await _axdesService.GetRooPathOfModel());
         }
 
         /// <summary>
@@ -57,8 +57,8 @@ namespace AXAPIWrapper.Controllers
             {
                 ContentType = "application/json",
                 StatusCode = (int)HttpStatusCode.OK,
-                Content =JsonConvert.SerializeObject(result),
-                
+                Content = JsonConvert.SerializeObject(result),
+
             };
         }
 
@@ -84,6 +84,7 @@ namespace AXAPIWrapper.Controllers
 
         /// <summary>
         /// Bóc tách form biểu mẫu với modelName được truyền vào từ phía client
+        /// Lấy bản ghi đầu tiên và chuyển đổi thành dạng Dictionay<string,InformationField>
         /// </summary>
         /// <param name="request"></param>
         /// <param name="modelName"></param>
@@ -92,12 +93,40 @@ namespace AXAPIWrapper.Controllers
         [Route("form/{modelName}")]
         public async Task<IActionResult> FormExtractByModelName([FromBody] BasicFileRequest request, string modelName)
         {
+            var result = await ProcessAPIRequest(request, modelName, CommonEnum.FunctionToCallAxDES.FormExtractByModelName);
+            return result;
+        }
+        /// <summary>
+        /// Bóc tách form biểu mẫu với modelName được truyền vào từ phía client
+        /// Giữ nguyên định dạng kết quả của Axdes
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="modelName"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("form-raw/{modelName}")]
+        public async Task<IActionResult> FormExtractByModelNameWithRawResult([FromBody] BasicFileRequest request, string modelName)
+        {
+            var result = await ProcessAPIRequest(request, modelName, CommonEnum.FunctionToCallAxDES.FormExtractByModelNameWithRawResult);
+            return result;
+        }
+
+        #region private function
+        /// <summary>
+        /// Thực hiện chuyển tiếp request tới AxDES
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="modelName"></param>
+        /// <param name="functionToCall"></param>
+        /// <returns></returns>
+        private async Task<IActionResult> ProcessAPIRequest([FromBody] BasicFileRequest request, string modelName, string functionToCall)
+        {
             //Header process
             var headerInfo = HeaderRequestHelper.GetHeaderInfo(Request);
             AppendResponse(headerInfo);
             try
             {
-                var result = await _processRequestService.ProcessRequest(request, CommonEnum.FunctionToCallAxDES.FormExtractByModelName, headerInfo,modelName);
+                var result = await _processRequestService.ProcessRequest(request, functionToCall, headerInfo, modelName);
                 return new ContentResult
                 {
                     ContentType = "application/json",
@@ -112,9 +141,6 @@ namespace AXAPIWrapper.Controllers
                 return StatusCode(500, msg);
             }
         }
-
-        #region private function
-
         private void AppendResponse(HeaderRequestInfo info)
         {
             Response.Headers.Add(H_Request_Id, info.RequestId);
