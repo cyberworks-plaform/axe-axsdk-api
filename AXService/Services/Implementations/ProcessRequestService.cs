@@ -205,7 +205,15 @@ namespace AXService.Services.Implementations
                         throw new ArgumentException("Missing Param: ModelName");
                     }
                     string modelName = args[0];
-                    return async (string path) => await _axdesService.FormExtractByModelName(path, modelName);
+                    return async (string path) => await _axdesService.FormExtractByModelName(path, modelName,isUseAxdesRawResult:false);
+                
+                case CommonEnum.FunctionToCallAxDES.FormExtractByModelNameWithRawResult:
+                    if (args == null || args.Length < 1)
+                    {
+                        throw new ArgumentException("Missing Param: ModelName");
+                    }
+                    modelName = args[0];
+                    return async (string path) => await _axdesService.FormExtractByModelName(path, modelName, isUseAxdesRawResult: true);
 
                 #endregion
 
