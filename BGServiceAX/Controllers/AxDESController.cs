@@ -104,8 +104,8 @@ namespace AXAPIWrapper.Controllers
         /// <param name="modelName"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("form-raw/{modelName}")]
-        public async Task<IActionResult> FormExtractByModelNameWithRawResult([FromBody] BasicFileRequest request, string modelName)
+        [Route("BocTachTheoMoHinhAsync/{modelName}")]
+        public async Task<IActionResult> BocTachTheoMoHinhAsync([FromBody] BasicFileRequest request, string modelName)
         {
             var result = await ProcessAPIRequest(request, modelName, CommonEnum.FunctionToCallAxDES.FormExtractByModelNameWithRawResult);
             return result;
