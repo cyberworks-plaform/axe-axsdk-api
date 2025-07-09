@@ -134,6 +134,11 @@ namespace AXAPIWrapper.Controllers
                     Content = result is string ? (string)result : JsonConvert.SerializeObject(result),
                 };
             }
+            catch (AxDesNullValueException axdesNullException)
+            {
+                Log.Error(axdesNullException, axdesNullException.Message);
+                throw ; // trả lại lỗi -> sẽ được xử lý chung ở middleware
+            }
             catch (Exception ex)
             {
                 string msg = $"Error calling extract form by modelName = {modelName} with message: {ex.Message}";

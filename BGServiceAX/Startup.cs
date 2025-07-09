@@ -24,7 +24,6 @@ namespace BGServiceAX
         public static string Version =>
             Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "vUNKNOWN";
 
-        public static string LastUpdated => "2025-06-24";
     }
     public class Startup
     {
@@ -57,7 +56,7 @@ namespace BGServiceAX
                 {
                     Title = $"AXSDK OpenAPI",
                     Version = AppInfo.Version,
-                    Description = $"Last update: {AppInfo.LastUpdated} - {AppInfo.Version}",
+                    Description = $"{AppInfo.Version}",
                     Contact = new OpenApiContact
                     {
                         Name = "Huy Dinh",
@@ -110,6 +109,7 @@ namespace BGServiceAX
             app.UseAuthentication();
             //app.UseAuthorization();
 
+            app.UseMiddleware<AxDesExceptionMiddleware>();
             app.UseMiddleware<RateLimitingMiddleware>();
 
             app.UseSwagger();
