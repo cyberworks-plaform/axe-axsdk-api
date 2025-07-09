@@ -34,7 +34,7 @@ jobs:
       - name: 📌 Get zip file name
         id: get_zip_name
         run: |
-            ZIP_FILE=$(find ./BGServiceAX/publish -name '*.zip' | head -n 1)
+            ZIP_FILE=$(find ./BGServiceAX/publish -maxdepth 1 -type f -name '*.zip' | head -n 1)
             echo "zip_path=$ZIP_FILE" >> $GITHUB_OUTPUT
             echo "zip_name=$(basename $ZIP_FILE)" >> $GITHUB_OUTPUT
 
