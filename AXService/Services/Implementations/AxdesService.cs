@@ -74,7 +74,9 @@ namespace AXService.Services.Implementations
 
                 if (axdesResponse == null || !axdesResponse.Any())
                 {
-                    Log.Warning($"No result returned from AxDES for model: {modelName} and file: {filePath}");
+                    string exceptionMessage = $"No result returned from AxDES for model: {modelName} and file: {filePath}";
+                    Log.Error(exceptionMessage);
+                    throw new AxDesNullValueException(exceptionMessage);
                 }
                 else
                 {
@@ -92,6 +94,10 @@ namespace AXService.Services.Implementations
 
              
                 return returnResult;
+            }
+            catch (AxDesNullValueException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
